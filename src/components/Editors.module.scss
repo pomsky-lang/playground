@@ -1,0 +1,31 @@
+.divs {
+  position: relative;
+  display: flex;
+  width: 100vw;
+  top: 0;
+  bottom: 60px;
+
+  .rulexPart,
+  .regexPart {
+    width: 50vw;
+    height: 100%;
+  }
+
+  .regexPart {
+    border-left: 1px solid #7773;
+    margin-left: -1px;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-ligatures: none;
+    white-space: pre-wrap;
+
+    .error {
+      color: #ff5a5a;
+    }
+    .help {
+      color: #63b6ff;
+    }
+  }
+}

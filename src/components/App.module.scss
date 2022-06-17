@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  box-sizing: border-box;
+  background-color: #212529;
+  border-top: 4px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(90deg, #b53636, #f4b73d 50%, #d32e9d);
+  color: white;
+  padding: 0 1rem 0.1rem;
+  align-items: center;
+  height: 60px;
+  gap: 1.25rem;
+  box-shadow: inset 0 -1px 0 #7773;
+
+  h1 {
+    font-weight: 600;
+    font-size: 1.25rem;
+
+    .thin {
+      font-weight: 400;
+      color: #f4b73d;
+    }
+  }
+
+  .flexGrow {
+    display: flex;
+    flex-grow: 1;
+    gap: 1.25rem;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      color: #8ed6fb;
+    }
+  }
+}
