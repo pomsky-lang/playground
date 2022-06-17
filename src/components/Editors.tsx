@@ -3,18 +3,27 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { useEffect, useRef, useState } from 'react'
 
 import { defaultEditorSettings } from '../editors/editorSettings'
-import { languageDefinition } from '../editors/languageDefinition'
+import { highlight } from '../editors/highlight'
+import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
+import { init, compileRulex } from '../editors/rulexSupport'
 import css from './Editors.module.scss'
 
-import init, { compile } from '../../rulex-play/pkg/rulex_play.js'
-
 const urlParams = new URLSearchParams(location.search)
+
+let storeLocally = false
 
 function getEditorInitialValue() {
   const urlParamContent = urlParams.get('text')
   if (urlParamContent !== null) {
     return decodeURIComponent(atob(urlParamContent))
   }
+
+  storeLocally = true
+  const local = localStorage.getItem('playgroundText')
+  if (local !== null) {
+    return local
+  }
+
   return `# enter rulex expression here
 << 'example'
 `
@@ -27,35 +36,10 @@ window.MonacoEnvironment = {
 }
 
 languages.register({ id: 'rulex' })
-
 languages.setMonarchTokensProvider('rulex', languageDefinition)
+languages.setLanguageConfiguration('rulex', languageConfiguration)
 
 editor.setTheme('vs-dark')
-
-function compileRulex(
-  input: string,
-  options?: { flavor?: string },
-): string | { error: string; help?: string; spans: [string, string, string] } {
-  const [success, output, help, s_prefix, s_content, s_suffix] = compile(
-    input,
-    options?.flavor ?? 'js',
-  )
-  if (success) {
-    return output
-  } else {
-    return {
-      error: output,
-      help,
-      spans: [s_prefix, s_content, s_suffix],
-    }
-  }
-}
-
-function escapeHtml(html: string): string {
-  return html.replace(/[<"&]/g, function (c) {
-    return c === '<' ? '&lt;' : c === '"' ? '&quot;' : c === '&' ? '&amp;' : c
-  })
-}
 
 async function initEditors(
   rulexEditorTarget: HTMLElement,
@@ -79,31 +63,21 @@ async function initEditors(
   await init()
 
   const syncEditors = () => {
-    window.currentEditorContent = rulexEditor.getValue()
+    const value = rulexEditor.getValue()
+    window.currentEditorContent = value
+    if (storeLocally) {
+      localStorage.setItem('playgroundText', value)
+    }
 
-    const result = compileRulex(rulexEditor.getValue())
+    const result = compileRulex(value)
     if (typeof result === 'string') {
-      regexEditorTarget.innerText = result
-
+      regexEditorTarget.innerText = ''
+      regexEditorTarget.append(highlight(result, 'regex'))
+      regexEditorTarget.classList.add(css.valid)
       editor.setModelMarkers(rulexEditor.getModel()!, '', [])
     } else {
-      const lines1 = result.spans[0].split('\n')
-      const lines2 = result.spans[1].split('\n')
-      const last1 = lines1[lines1.length - 1] ?? ''
-      const last2 = lines2[lines2.length - 1] ?? ''
-      const start1 = last1.length + 1
-      const start2 = lines2.length > 1 ? last2.length + 1 : last2.length + start1
-
-      editor.setModelMarkers(rulexEditor.getModel()!, '', [
-        {
-          severity: MarkerSeverity.Error,
-          startColumn: start1,
-          startLineNumber: lines1.length,
-          endColumn: start2,
-          endLineNumber: lines1.length + lines2.length - 1,
-          message: result.error + (result.help != null ? '\n\nHelp: ' + result.help : ''),
-        },
-      ])
+      editor.setModelMarkers(rulexEditor.getModel()!, '', [result])
+      regexEditorTarget.classList.remove(css.valid)
     }
   }
 
@@ -154,6 +128,8 @@ export function Editors() {
       </div>
       <div className={css.regexPart}>
         <div
+          className={`${css.inner} ${css.valid}`}
+          tabIndex={0}
           ref={(ref) => {
             if (ref != null) regexEditorEl.current = ref
           }}

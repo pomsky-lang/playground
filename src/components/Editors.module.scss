@@ -8,12 +8,11 @@
   .rulexPart,
   .regexPart {
     width: 50vw;
-    height: 100%;
+    background-color: #1e1e1e;
   }
 
   .regexPart {
     border-left: 1px solid #7773;
-    margin-left: -1px;
     box-sizing: border-box;
     padding: 0.5rem;
     color: white;
@@ -21,11 +20,58 @@
     font-variant-ligatures: none;
     white-space: pre-wrap;
 
+    .inner {
+      &.valid {
+        transition: opacity 0.25s ease-in 0;
+      }
+
+      &:not(.valid) {
+        opacity: 0.67;
+        filter: grayscale(0.67);
+        transition: opacity 0.25s ease-in 1.25s, filter 0.25s ease-in 1.25s;
+      }
+    }
+
     .error {
       color: #ff5a5a;
     }
     .help {
       color: #63b6ff;
+    }
+
+    /*
+      .string
+      .punct
+      .modifier
+      .caret
+      .dollar
+      .star
+      .plus
+      .questionmark
+      .brace
+      .dash
+      .dot
+      .escape
+    */
+
+    :global(.modifier),
+    :global(.caret),
+    :global(.dollar),
+    :global(.star),
+    :global(.plus),
+    :global(.questionmark),
+    :global(.brace),
+    :global(.dash),
+    :global(.dot) {
+      color: #569cd6;
+    }
+
+    :global(.string) {
+      color: #ce9178;
+    }
+
+    :global(.escape) {
+      color: #3dc9b0;
     }
   }
 }

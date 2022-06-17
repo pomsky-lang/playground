@@ -12,6 +12,6 @@ export const defaultEditorSettings: editor.IStandaloneEditorConstructionOptions 
   scrollbar: {
     alwaysConsumeMouseWheel: false,
   },
-  columnSelection: true,
   fontSize: 17,
+  padding: { top: 6, bottom: 6 },
 }

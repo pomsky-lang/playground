@@ -38,7 +38,7 @@ interface TokenError {
   error: string
 }
 
-export function tokenize(input: string): [Token | TokenError, number, number][] {
+export function tokenizeRulex(input: string): [Token | TokenError, number, number][] {
   let result: [Token | TokenError, number, number][] = []
   let offset = 0
 
@@ -96,16 +96,16 @@ const singleTokens: { [token: string]: Token | TokenError } = {
   $: { error: 'Dollar' },
 }
 
-function consumeChain(input: string, c: string): [number, Token | TokenError] {
+function consumeChain(input: string, char: string): [number, Token | TokenError] {
   if (input.startsWith('<%')) return [2, 'BStart']
   if (input.startsWith('%>')) return [2, 'BEnd']
   if (input.startsWith('>>')) return [2, 'LookAhead']
   if (input.startsWith('<<')) return [2, 'LookBehind']
   if (input.startsWith('::')) return [2, 'Backref']
 
-  if (c in singleTokens) return [1, singleTokens[c]]
+  if (char in singleTokens) return [1, singleTokens[char]]
 
-  if (c == "'") {
+  if (char == "'") {
     const lenInner = input.slice(1).indexOf("'")
     if (lenInner === -1) {
       return [input.length, { error: 'UnclosedString' }]
@@ -114,7 +114,7 @@ function consumeChain(input: string, c: string): [number, Token | TokenError] {
     }
   }
 
-  if (c == '"') {
+  if (char == '"') {
     const len = findLengthOfDoubleQuotedString(input)
     if (len !== undefined) {
       return [len, 'String']
@@ -135,12 +135,12 @@ function consumeChain(input: string, c: string): [number, Token | TokenError] {
     }
   }
 
-  if (IS_ASCII_DIGIT.test(c)) {
+  if (IS_ASCII_DIGIT.test(char)) {
     const numLength = input.search(NO_WORD_CHAR)
     return [numLength === -1 ? input.length : numLength, 'Number']
   }
 
-  if (IS_LETTER.test(c) || c == '_') {
+  if (IS_LETTER.test(char) || char == '_') {
     const wordLength = input.search(NO_WORD_CHAR)
     return [wordLength === -1 ? input.length : wordLength, 'Identifier']
   }
