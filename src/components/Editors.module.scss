@@ -3,22 +3,37 @@
   display: flex;
   width: 100vw;
   top: 0;
-  bottom: 60px;
+  min-height: calc(100vh - 60px);
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+  }
 
   .rulexPart,
   .regexPart {
     width: 50vw;
     background-color: #1e1e1e;
+
+    @media (max-width: 800px) {
+      width: 100vw;
+    }
   }
 
   .regexPart {
-    border-left: 1px solid #7773;
+    flex-grow: 1;
+    border: 1px solid #7773;
+    border-width: 0 0 0 1px;
     box-sizing: border-box;
     padding: 0.5rem;
     color: white;
     font-family: 'JetBrains Mono', monospace;
     font-variant-ligatures: none;
     white-space: pre-wrap;
+    overflow: auto;
+
+    @media (max-width: 800px) {
+      border-width: 1px 0 0 0;
+    }
 
     .inner {
       &.valid {

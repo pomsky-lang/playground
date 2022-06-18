@@ -116,11 +116,16 @@ export function Editors() {
     }
   }, [shouldInitialize])
 
+  const editorStyle =
+    window.innerWidth > 800
+      ? { height: 'calc(100vh - 60px)', width: '50vw' }
+      : { height: 'min(50vh, 400px)', width: '100vw' }
+
   return (
     <div className={css.divs}>
       <div className={css.rulexPart}>
         <div
-          style={{ height: 'calc(100vh - 60px)', width: '50vw' }}
+          style={editorStyle}
           ref={(ref) => {
             if (ref != null) rulexEditorEl.current = ref
           }}
