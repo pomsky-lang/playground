@@ -42,9 +42,6 @@ jobs:
       - name: 📦 Build production website
         run: yarn run build -v
 
-      - name: List files in /dist
-        run: ls dist
-
       - name: 🚀 Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
