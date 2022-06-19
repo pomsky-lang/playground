@@ -1,6 +1,7 @@
 import { editor, languages, MarkerSeverity } from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { useEffect, useRef, useState } from 'react'
+import { completionItems } from '../editors/completions'
 
 import { defaultEditorSettings } from '../editors/editorSettings'
 import { highlight } from '../editors/highlight'
@@ -38,6 +39,7 @@ window.MonacoEnvironment = {
 languages.register({ id: 'rulex' })
 languages.setMonarchTokensProvider('rulex', languageDefinition)
 languages.setLanguageConfiguration('rulex', languageConfiguration)
+languages.registerCompletionItemProvider('rulex', completionItems)
 
 editor.setTheme('vs-dark')
 
