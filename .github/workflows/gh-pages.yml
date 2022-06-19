@@ -1,0 +1,53 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: 🚚 Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '17'
+          cache: 'yarn'
+
+      - name: 🚚 Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.3.0
+        with:
+          version: 'latest'
+
+      - name: ⚡ Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rulex-play/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: 🔧 Build rulex WASM
+        working-directory: ./rulex-play
+        run: wasm-pack build --target web
+
+      - name: 🚚 Install dependencies
+        run: yarn
+
+      - name: 📦 Build production website
+        run: yarn run build -v
+
+      - name: List files in /dist
+        run: ls dist
+
+      - name: 🚀 Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.PUBLISH_TOKEN }}
+          publish_dir: ./dist
