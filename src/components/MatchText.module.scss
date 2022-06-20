@@ -1,0 +1,65 @@
+.outer {
+  padding: 0;
+
+  .topPanel {
+    display: flex;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    font-size: inherit;
+    font-family: Work Sans, sans-serif;
+
+    label {
+      flex-grow: 1;
+    }
+  }
+
+  .errorPanel {
+    background-color: #3f0c0c;
+    padding: 0.8rem;
+    border-top: 1px solid #99999933;
+
+    b {
+      color: #ffaaaa;
+    }
+
+    .bug {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: #fffc;
+
+      a {
+        color: #acdfff;
+      }
+    }
+  }
+
+  .input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: #7771;
+    color: inherit;
+    border: 1px solid #99999933;
+    border-width: 1px 0;
+    min-height: 6rem;
+    font-size: inherit;
+    font-family: Work Sans, sans-serif;
+    padding: 0.5rem;
+    margin: 0;
+    resize: vertical;
+
+    &:focus {
+      box-shadow: 0 0 0 3px #004cb7;
+      border-color: #0c65ff;
+      outline: none;
+    }
+  }
+
+  .matches {
+    color: #777;
+
+    &.success {
+      color: #0cff30;
+    }
+  }
+}

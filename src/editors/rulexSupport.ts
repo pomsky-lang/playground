@@ -3,10 +3,9 @@ import init, { compile } from '../../rulex-play/pkg/rulex_play.js'
 
 export { init }
 
-export function compileRulex(
-  input: string,
-  options?: { flavor?: string },
-): string | editor.IMarkerData {
+export type CompileResult = string | (editor.IMarkerData & { title: string; help?: string })
+
+export function compileRulex(input: string, options?: { flavor?: string }): CompileResult {
   const [success, output, help, s_prefix, s_content]: [boolean, ...string[]] = compile(
     input,
     options?.flavor ?? 'js',
@@ -29,6 +28,8 @@ export function compileRulex(
       endColumn: start2,
       endLineNumber: lines1.length + lines2.length - 1,
       message: help != null ? `${output}\n\nHelp: ${help}` : output,
+      title: output,
+      help,
     }
   }
 }

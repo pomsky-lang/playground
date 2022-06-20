@@ -1,0 +1,20 @@
+.outer {
+  box-sizing: border-box;
+  background-color: #3f0c0c;
+  border-bottom: 1px solid #fff1;
+  font-family: Work Sans, sans-serif;
+  padding: 0.8rem;
+
+  .position {
+    color: #ff9191;
+    text-shadow: 0 0 2px #0005;
+    margin-right: 0.4rem;
+  }
+
+  .help {
+    color: #97dbff;
+    text-shadow: 0 0 2px #0005;
+    display: block;
+    margin-top: 0.2rem;
+  }
+}

@@ -1,13 +1,17 @@
-import { editor, languages, MarkerSeverity } from 'monaco-editor'
+import { editor, languages } from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { useEffect, useRef, useState } from 'react'
 import { completionItems } from '../editors/completions'
 
 import { defaultEditorSettings } from '../editors/editorSettings'
-import { highlight } from '../editors/highlight'
 import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
-import { init, compileRulex } from '../editors/rulexSupport'
+import { init, compileRulex, CompileResult } from '../editors/rulexSupport'
 import css from './Editors.module.scss'
+import { ErrorMessage } from './ErrorMessage'
+import { Output } from './Output'
+
+export const flavors = ['js', 'java', 'pcre', 'ruby', 'python', 'rust', 'dotnet'] as const
+export type Flavor = typeof flavors[number]
 
 const urlParams = new URLSearchParams(location.search)
 
@@ -43,11 +47,11 @@ languages.registerCompletionItemProvider('rulex', completionItems)
 
 editor.setTheme('vs-dark')
 
-async function initEditors(
-  rulexEditorTarget: HTMLElement,
-  regexEditorTarget: HTMLElement,
+async function initEditor(
+  editorTarget: HTMLElement,
+  setResult: (value: string) => void,
 ): Promise<editor.IStandaloneCodeEditor> {
-  const rulexEditor = editor.create(rulexEditorTarget, {
+  const rulexEditor = editor.create(editorTarget, {
     value: initialValue,
     language: 'rulex',
     ...defaultEditorSettings,
@@ -62,8 +66,6 @@ async function initEditors(
   rulexEditor.focus()
   rulexEditor.revealLineInCenter(lineNumber)
 
-  await init()
-
   const syncEditors = () => {
     const value = rulexEditor.getValue()
     window.currentEditorContent = value
@@ -71,16 +73,7 @@ async function initEditors(
       localStorage.setItem('playgroundText', value)
     }
 
-    const result = compileRulex(value)
-    if (typeof result === 'string') {
-      regexEditorTarget.innerText = ''
-      regexEditorTarget.append(highlight(result, 'regex'))
-      regexEditorTarget.classList.add(css.valid)
-      editor.setModelMarkers(rulexEditor.getModel()!, '', [])
-    } else {
-      editor.setModelMarkers(rulexEditor.getModel()!, '', [result])
-      regexEditorTarget.classList.remove(css.valid)
-    }
+    setResult(value)
   }
 
   syncEditors()
@@ -91,32 +84,53 @@ async function initEditors(
 }
 
 export function Editors() {
-  const rulexEditorEl = useRef<HTMLElement>()
-  const regexEditorEl = useRef<HTMLElement>()
-  const editor = useRef<editor.IStandaloneCodeEditor>()
+  const editorElem = useRef<HTMLElement>()
+  const editorRef = useRef<editor.IStandaloneCodeEditor>()
 
   const [shouldInitialize, setShouldInitialize] = useState(false)
+  const [wasmInit, setWasmInit] = useState(false)
+  const [editorValue, setEditorValue] = useState('')
+  const [result, setResult] = useState<CompileResult>('')
+  const [flavor, setFlavor] = useState<Flavor>('js')
 
   useEffect(() => {
-    if (rulexEditorEl.current != null && regexEditorEl.current != null) {
+    if (editorElem.current != null) {
       setShouldInitialize(true)
     }
 
     return () => {
-      if (editor.current) {
-        editor.current.dispose()
-        editor.current.getDomNode()?.remove()
+      if (editorRef.current) {
+        editorRef.current.dispose()
+        editorRef.current.getDomNode()?.remove()
       }
     }
   }, [])
 
   useEffect(() => {
     if (shouldInitialize) {
-      initEditors(rulexEditorEl.current!, regexEditorEl.current!).then((e) => {
-        editor.current = e
+      initEditor(editorElem.current!, setEditorValue).then((e) => {
+        editorRef.current = e
       })
     }
   }, [shouldInitialize])
+
+  useEffect(() => {
+    if (!wasmInit) {
+      init().then(() => {
+        setWasmInit(true)
+        setResult(compileRulex(editorValue, { flavor }))
+      })
+    } else {
+      setResult(compileRulex(editorValue, { flavor }))
+    }
+  }, [editorValue, flavor])
+
+  useEffect(() => {
+    const rulexEditor = editorRef.current
+    if (rulexEditor == null) return
+
+    editor.setModelMarkers(rulexEditor.getModel()!, '', typeof result === 'string' ? [] : [result])
+  }, [result])
 
   const editorStyle =
     window.innerWidth > 800
@@ -129,18 +143,13 @@ export function Editors() {
         <div
           style={editorStyle}
           ref={(ref) => {
-            if (ref != null) rulexEditorEl.current = ref
+            if (ref != null) editorElem.current = ref
           }}
         />
       </div>
       <div className={css.regexPart}>
-        <div
-          className={`${css.inner} ${css.valid}`}
-          tabIndex={0}
-          ref={(ref) => {
-            if (ref != null) regexEditorEl.current = ref
-          }}
-        />
+        <ErrorMessage result={result} />
+        <Output result={result} flavor={flavor} onFlavorChange={setFlavor} />
       </div>
     </div>
   )

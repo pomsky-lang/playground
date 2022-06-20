@@ -24,27 +24,11 @@
     border: 1px solid #7773;
     border-width: 0 0 0 1px;
     box-sizing: border-box;
-    padding: 0.5rem;
     color: white;
-    font-family: 'JetBrains Mono', monospace;
-    font-variant-ligatures: none;
-    white-space: pre-wrap;
     overflow: auto;
 
     @media (max-width: 800px) {
       border-width: 1px 0 0 0;
-    }
-
-    .inner {
-      &.valid {
-        transition: opacity 0.25s ease-in 0;
-      }
-
-      &:not(.valid) {
-        opacity: 0.67;
-        filter: grayscale(0.67);
-        transition: opacity 0.25s ease-in 1.25s, filter 0.25s ease-in 1.25s;
-      }
     }
 
     .error {
@@ -53,21 +37,6 @@
     .help {
       color: #63b6ff;
     }
-
-    /*
-      .string
-      .punct
-      .modifier
-      .caret
-      .dollar
-      .star
-      .plus
-      .questionmark
-      .brace
-      .dash
-      .dot
-      .escape
-    */
 
     :global(.modifier),
     :global(.caret),
