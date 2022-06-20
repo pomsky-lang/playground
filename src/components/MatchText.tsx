@@ -13,35 +13,50 @@ export function MatchText({ regex }: Args) {
   const [matchText, setMatchText] = useState(
     () => localStorage.getItem('playgroundMatchText') ?? '',
   )
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [compileError, setCompileError] = useState<string | null>(null)
+  const [execError, setExecError] = useState<string | null>(null)
 
   const compiledRegex = useMemo(() => {
     try {
       const compiled = new RegExp(regex, ignoreCase ? 'giu' : 'gu')
-      if (errorMsg != null) {
-        setErrorMsg(null)
+      if (compileError != null) {
+        setCompileError(null)
+        setExecError(null)
       }
       return compiled
     } catch (e) {
-      setErrorMsg((e as Error).message)
+      setCompileError((e as Error).message)
+      setExecError(null)
       return /[^\s\S]/g
     }
   }, [regex, ignoreCase])
   const [matches, setMatches] = useState<RegExpExecArray[]>([])
 
   useEffect(() => {
-    const results = []
+    const results: RegExpExecArray[] = []
     compiledRegex.lastIndex = 0
     let previousLastIndex = 0
 
+    if (execError != null) {
+      setExecError(null)
+    }
+
+    let limit = 5000
+
     for (;;) {
+      if (limit-- === 0) {
+        setExecError('Stopped after 5,000 matches')
+        break
+      }
+
       const next = compiledRegex.exec(matchText)
       if (next == null) break
       results.push(next)
 
       // don't get stuck
-      if (compiledRegex.lastIndex === previousLastIndex) {
-        compiledRegex.lastIndex += 1
+      if (compiledRegex.lastIndex <= previousLastIndex) {
+        const skipChar = matchText.charCodeAt(compiledRegex.lastIndex)
+        compiledRegex.lastIndex += skipChar <= 0xd7ff ? 1 : 2
       }
 
       previousLastIndex = compiledRegex.lastIndex
@@ -71,9 +86,9 @@ export function MatchText({ regex }: Args) {
             : `${matches.length} matches`}
         </div>
       </div>
-      {errorMsg != null && (
+      {compileError != null && (
         <div className={css.errorPanel}>
-          <b>Error compiling regex:</b> {errorMsg}
+          <b>Error compiling regex:</b> {compileError}
           <br />
           <div className={css.bug}>
             You found a bug! You can{' '}
@@ -86,6 +101,11 @@ export function MatchText({ regex }: Args) {
             </a>
             .
           </div>
+        </div>
+      )}
+      {execError != null && (
+        <div className={css.errorPanel}>
+          <b>Error executing regex:</b> {execError}
         </div>
       )}
       <textarea
