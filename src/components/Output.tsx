@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { highlight } from '../editors/highlight'
 import { CompileResult } from '../editors/rulexSupport'
 import { Flavor, flavors } from './Editors'
+import { ErrorMessage } from './ErrorMessage'
 import { MatchText } from './MatchText'
 import css from './Output.module.scss'
 import { Tabbar } from './Tabbar'
@@ -63,6 +64,7 @@ export function Output({ result, flavor, onFlavorChange }: Args) {
               </button>
             ))}
           </div>
+          <ErrorMessage result={result} />
           <div className={css.regex} tabIndex={0}>
             {highlight(cached, 'regex')}
           </div>

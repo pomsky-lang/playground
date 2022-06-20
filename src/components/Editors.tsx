@@ -7,7 +7,6 @@ import { defaultEditorSettings } from '../editors/editorSettings'
 import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
 import { init, compileRulex, CompileResult } from '../editors/rulexSupport'
 import css from './Editors.module.scss'
-import { ErrorMessage } from './ErrorMessage'
 import { Output } from './Output'
 
 export const flavors = ['js', 'java', 'pcre', 'ruby', 'python', 'rust', 'dotnet'] as const
@@ -148,7 +147,6 @@ export function Editors() {
         />
       </div>
       <div className={css.regexPart}>
-        <ErrorMessage result={result} />
         <Output result={result} flavor={flavor} onFlavorChange={setFlavor} />
       </div>
     </div>
