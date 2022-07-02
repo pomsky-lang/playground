@@ -93,7 +93,7 @@ export function MatchText({ regex }: Args) {
           <div className={css.bug}>
             You found a bug! You can{' '}
             <a
-              href="https://github.com/rulex-rs/rulex/issues"
+              href="https://github.com/rulex-rs/pomsky/issues"
               target="_blank"
               rel="noopener noreferrer"
             >

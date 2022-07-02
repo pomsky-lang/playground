@@ -1,5 +1,5 @@
 [package]
-name = "rulex-play"
+name = "pomsky-play"
 version = "0.1.1"
 authors = ["Ludwig Stecher <ludwig.stecher@gmx.de>"]
 edition = "2021"

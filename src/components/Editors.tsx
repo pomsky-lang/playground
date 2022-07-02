@@ -5,7 +5,7 @@ import { completionItems } from '../editors/completions'
 
 import { defaultEditorSettings } from '../editors/editorSettings'
 import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
-import { init, compileRulex, CompileResult } from '../editors/rulexSupport'
+import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
 import css from './Editors.module.scss'
 import { Output } from './Output'
 
@@ -28,7 +28,7 @@ function getEditorInitialValue() {
     return local
   }
 
-  return `# enter rulex expression here
+  return `# enter pomsky expression here
 << 'example'
 `
 }
@@ -39,10 +39,10 @@ window.MonacoEnvironment = {
   getWorker: () => new editorWorker(),
 }
 
-languages.register({ id: 'rulex' })
-languages.setMonarchTokensProvider('rulex', languageDefinition)
-languages.setLanguageConfiguration('rulex', languageConfiguration)
-languages.registerCompletionItemProvider('rulex', completionItems)
+languages.register({ id: 'pomsky' })
+languages.setMonarchTokensProvider('pomsky', languageDefinition)
+languages.setLanguageConfiguration('pomsky', languageConfiguration)
+languages.registerCompletionItemProvider('pomsky', completionItems)
 
 editor.setTheme('vs-dark')
 
@@ -50,9 +50,9 @@ async function initEditor(
   editorTarget: HTMLElement,
   setResult: (value: string) => void,
 ): Promise<editor.IStandaloneCodeEditor> {
-  const rulexEditor = editor.create(editorTarget, {
+  const pomskyEditor = editor.create(editorTarget, {
     value: initialValue,
-    language: 'rulex',
+    language: 'pomsky',
     ...defaultEditorSettings,
   })
 
@@ -61,12 +61,12 @@ async function initEditor(
   const lastLine = lines[lines.length - 1]
   const column = lastLine.length + 1
 
-  rulexEditor.setPosition({ lineNumber, column })
-  rulexEditor.focus()
-  rulexEditor.revealLineInCenter(lineNumber)
+  pomskyEditor.setPosition({ lineNumber, column })
+  pomskyEditor.focus()
+  pomskyEditor.revealLineInCenter(lineNumber)
 
   const syncEditors = () => {
-    const value = rulexEditor.getValue()
+    const value = pomskyEditor.getValue()
     window.currentEditorContent = value
     if (storeLocally) {
       localStorage.setItem('playgroundText', value)
@@ -77,9 +77,9 @@ async function initEditor(
 
   syncEditors()
 
-  rulexEditor.getModel()?.onDidChangeContent(syncEditors)
+  pomskyEditor.getModel()?.onDidChangeContent(syncEditors)
 
-  return rulexEditor
+  return pomskyEditor
 }
 
 export function Editors() {
@@ -117,18 +117,18 @@ export function Editors() {
     if (!wasmInit) {
       init().then(() => {
         setWasmInit(true)
-        setResult(compileRulex(editorValue, { flavor }))
+        setResult(compilePomsky(editorValue, { flavor }))
       })
     } else {
-      setResult(compileRulex(editorValue, { flavor }))
+      setResult(compilePomsky(editorValue, { flavor }))
     }
   }, [editorValue, flavor])
 
   useEffect(() => {
-    const rulexEditor = editorRef.current
-    if (rulexEditor == null) return
+    const pomskyEditor = editorRef.current
+    if (pomskyEditor == null) return
 
-    editor.setModelMarkers(rulexEditor.getModel()!, '', typeof result === 'string' ? [] : [result])
+    editor.setModelMarkers(pomskyEditor.getModel()!, '', typeof result === 'string' ? [] : [result])
   }, [result])
 
   const editorStyle =
@@ -138,7 +138,7 @@ export function Editors() {
 
   return (
     <div className={css.divs}>
-      <div className={css.rulexPart}>
+      <div className={css.pomskyPart}>
         <div
           style={editorStyle}
           ref={(ref) => {

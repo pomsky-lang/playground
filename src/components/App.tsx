@@ -6,14 +6,14 @@ export function App() {
     <>
       <header className={css.header}>
         <h1>
-          Rulex <span className={css.thin}>Playground</span>
+          Pomsky <span className={css.thin}>Playground</span>
         </h1>
 
         <div className={css.flexGrow}>
           <a href="https://rulex-rs.github.io/docs/get-started/introduction/">Docs</a>
         </div>
 
-        <a href="https://github.com/rulex-rs/rulex" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/rulex-rs/pomsky" target="_blank" rel="noopener noreferrer">
           GitHub
         </a>
       </header>

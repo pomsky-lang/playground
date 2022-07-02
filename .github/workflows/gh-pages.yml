@@ -29,11 +29,11 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            rulex-play/target
+            pomsky-play/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: 🔧 Build rulex WASM
-        working-directory: ./rulex-play
+      - name: 🔧 Build pomsky WASM
+        working-directory: ./pomsky-play
         run: wasm-pack build --target web
 
       - name: 🚚 Install dependencies

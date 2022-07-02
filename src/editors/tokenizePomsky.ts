@@ -38,7 +38,7 @@ interface TokenError {
   error: string
 }
 
-export function tokenizeRulex(input: string): [Token | TokenError, number, number][] {
+export function tokenizePomsky(input: string): [Token | TokenError, number, number][] {
   let result: [Token | TokenError, number, number][] = []
   let offset = 0
 

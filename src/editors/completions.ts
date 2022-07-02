@@ -49,7 +49,7 @@ const snippets: Snippet[] = [
     detail: 'keyword',
     documentation: {
       value:
-        "Keyword to make the previous repetition lazy. Opposite of `greedy`.\n\n### Example:\n```rulex\n['test']? lazy\n```",
+        "Keyword to make the previous repetition lazy. Opposite of `greedy`.\n\n### Example:\n```pomsky\n['test']? lazy\n```",
     },
     kind: languages.CompletionItemKind.Keyword,
   },
@@ -58,7 +58,7 @@ const snippets: Snippet[] = [
     detail: 'keyword',
     documentation: {
       value:
-        "Keyword to make the previous repetition greedy. Opposite of `lazy`.\nSince `greedy` is the default, you only need this when you enabled `lazy` mode.\n\n### Example:\n```rulex\nenable lazy;\n['test']? greedy\n```",
+        "Keyword to make the previous repetition greedy. Opposite of `lazy`.\nSince `greedy` is the default, you only need this when you enabled `lazy` mode.\n\n### Example:\n```pomsky\nenable lazy;\n['test']? greedy\n```",
     },
     kind: languages.CompletionItemKind.Keyword,
   },
@@ -67,7 +67,7 @@ const snippets: Snippet[] = [
     detail: 'keyword',
     documentation: {
       value:
-        "Matches a range of numbers. Use this if the number may be more than 1 code point.\n\n### Examples:\n```rulex\nrange '0'-'255'\nrange '0'-'10FFFF' base 16\n```",
+        "Matches a range of numbers. Use this if the number may be more than 1 code point.\n\n### Examples:\n```pomsky\nrange '0'-'255'\nrange '0'-'10FFFF' base 16\n```",
     },
     kind: languages.CompletionItemKind.Keyword,
   },

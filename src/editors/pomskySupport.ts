@@ -1,11 +1,11 @@
 import { editor, MarkerSeverity } from 'monaco-editor'
-import init, { compile } from '../../rulex-play/pkg/rulex_play.js'
+import init, { compile } from '../../pomsky-play/pkg/pomsky_play.js'
 
 export { init }
 
 export type CompileResult = string | (editor.IMarkerData & { title: string; help?: string })
 
-export function compileRulex(input: string, options?: { flavor?: string }): CompileResult {
+export function compilePomsky(input: string, options?: { flavor?: string }): CompileResult {
   const [success, output, help, s_prefix, s_content]: [boolean, ...string[]] = compile(
     input,
     options?.flavor ?? 'js',
