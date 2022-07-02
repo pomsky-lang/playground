@@ -11,13 +11,13 @@ const snippets: Snippet[] = [
   {
     label: 'Start',
     detail: 'built-in',
-    documentation: 'Start of the string; equivalent to `<%`. Compiles to `^`.',
+    documentation: 'Start of the string. Compiles to `^`.',
     kind: languages.CompletionItemKind.Value,
   },
   {
     label: 'End',
     detail: 'built-in',
-    documentation: 'End of the string; equivalent to `%>`. Compiles to `$`.',
+    documentation: 'End of the string. Compiles to `$`.',
     kind: languages.CompletionItemKind.Value,
   },
   {
