@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { highlight } from '../editors/highlight'
-import { CompileResult } from '../editors/rulexSupport'
+import { CompileResult } from '../editors/pomskySupport'
 import { Flavor, flavors } from './Editors'
 import { ErrorMessage } from './ErrorMessage'
 import { MatchText } from './MatchText'

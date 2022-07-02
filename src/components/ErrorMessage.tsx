@@ -1,5 +1,5 @@
 import { LegacyRef, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { CompileResult } from '../editors/rulexSupport'
+import { CompileResult } from '../editors/pomskySupport'
 import css from './ErrorMessage.module.scss'
 
 interface Args {
