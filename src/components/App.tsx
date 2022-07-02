@@ -10,7 +10,7 @@ export function App() {
         </h1>
 
         <div className={css.flexGrow}>
-          <a href="https://rulex-rs.github.io/docs/get-started/introduction/">Docs</a>
+          <a href="https://pomsky-lang.org/docs/get-started/introduction/">Docs</a>
         </div>
 
         <a href="https://github.com/rulex-rs/pomsky" target="_blank" rel="noopener noreferrer">

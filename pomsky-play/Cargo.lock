@@ -148,9 +148,9 @@ dependencies = [
 
 [[package]]
 name = "rulex"
-version = "0.4.2"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c474cc029915f5bc9a2d7ba26313dd84342fbbc8d3c285e7dcb6d9d0ab52bfd2"
+checksum = "09c140d93b2cd8190a73a024ae13f18517cbf0ef22eeb71decd57cd3ef90bcd5"
 dependencies = [
  "miette",
  "nom",
