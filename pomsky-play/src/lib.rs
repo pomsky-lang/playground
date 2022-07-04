@@ -1,5 +1,5 @@
-use rulex::options::{CompileOptions, ParseOptions, RegexFlavor};
-use rulex::Rulex;
+use pomsky::options::{CompileOptions, ParseOptions, RegexFlavor};
+use pomsky::Expr;
 use wasm_bindgen::prelude::*;
 
 mod utils;
@@ -36,7 +36,7 @@ pub fn compile(input: &str, flavor: &str) -> Vec<JsValue> {
         }
     };
 
-    match Rulex::parse_and_compile(
+    match Expr::parse_and_compile(
         input,
         ParseOptions {
             max_range_size: 12,
@@ -44,13 +44,13 @@ pub fn compile(input: &str, flavor: &str) -> Vec<JsValue> {
         },
         CompileOptions { flavor },
     ) {
-        Ok(output) => {
+        Ok((output, _warnings)) => {
             vec![true.into(), output.into()]
         }
         Err(err) => {
             let d = err.diagnostic(input);
 
-            let range = d.span.range();
+            let range = d.span.range().unwrap_or_default();
             let (prefix, content, suffix) = split_in_three(input, range.start, range.end);
 
             vec![

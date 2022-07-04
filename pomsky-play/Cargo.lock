@@ -118,11 +118,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87f3e037eac156d1775da914196f0f37741a274155e34a0b7e427c35d2a2ecb9"
 
 [[package]]
+name = "pomsky"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c77f81ea769143f4ef0deacbadaf3a048a8e139583432cb7c2434304512c74d5"
+dependencies = [
+ "miette",
+ "nom",
+ "thiserror",
+]
+
+[[package]]
 name = "pomsky-play"
 version = "0.1.1"
 dependencies = [
  "console_error_panic_hook",
- "rulex",
+ "pomsky",
  "wasm-bindgen",
  "wasm-bindgen-test",
  "wee_alloc",
@@ -144,17 +155,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a1feb54ed693b93a84e14094943b84b7c4eae204c512b7ccb95ab0c66d278ad1"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "rulex"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09c140d93b2cd8190a73a024ae13f18517cbf0ef22eeb71decd57cd3ef90bcd5"
-dependencies = [
- "miette",
- "nom",
- "thiserror",
 ]
 
 [[package]]
