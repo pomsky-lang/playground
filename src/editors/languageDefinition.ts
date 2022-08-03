@@ -4,7 +4,7 @@ export const languageDefinition: languages.IMonarchLanguage = {
   tokenizer: {
     root: [
       [/\b(let|enable|disable|lazy|greedy|range|base)\b/, 'keyword'],
-      [/[%!*+?<>{}\-.]+/, 'keyword'],
+      [/[$^%!*+?<>{}\-.]+/, 'keyword'],
       [/::?\w*/u, 'keyword'],
       [/\d+/, 'variable'],
       [/U\+[0-9a-fA-F_]{1,6}/, 'type'],

@@ -6,6 +6,8 @@ const NO_WORD_CHAR = /[^\p{Alpha}\p{M}\p{Nd}_]/u
 const QUOTE_OR_BS = /[\\"]/
 
 type Token =
+  | 'Caret'
+  | 'Dollar'
   | 'BStart'
   | 'BEnd'
   | 'LookAhead'
@@ -74,6 +76,8 @@ export function tokenizePomsky(input: string): [Token | TokenError, number, numb
 }
 
 const singleTokens: { [token: string]: Token | TokenError } = {
+  $: 'Dollar',
+  '^': 'Caret',
   '%': 'BWord',
   '*': 'Star',
   '+': 'Plus',
@@ -92,8 +96,6 @@ const singleTokens: { [token: string]: Token | TokenError } = {
   '.': 'Dot',
   ';': 'Semicolon',
   '=': 'Equals',
-  '^': { error: 'Caret' },
-  $: { error: 'Dollar' },
 }
 
 function consumeChain(input: string, char: string): [number, Token | TokenError] {
