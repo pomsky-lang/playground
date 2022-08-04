@@ -8,7 +8,7 @@ export const defaultEditorSettings: editor.IStandaloneEditorConstructionOptions 
   wrappingIndent: 'indent',
   fontFamily: "'JetBrains Mono', monospace",
   fontLigatures: false,
-  renderLineHighlight: 'none',
+  renderLineHighlight: 'all',
   scrollbar: {
     alwaysConsumeMouseWheel: false,
   },

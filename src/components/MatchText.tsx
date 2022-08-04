@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { Matches } from './Matches'
 import css from './MatchText.module.scss'
 
@@ -7,12 +8,8 @@ interface Args {
 }
 
 export function MatchText({ regex }: Args) {
-  const [ignoreCase, setIgnoreCase] = useState(
-    () => localStorage.getItem('playgroundIgnoreCase') === 'true',
-  )
-  const [matchText, setMatchText] = useState(
-    () => localStorage.getItem('playgroundMatchText') ?? '',
-  )
+  const [ignoreCase, setIgnoreCase] = useLocalStorage('playgroundIgnoreCase', () => false)
+  const [matchText, setMatchText] = useLocalStorage('playgroundMatchText', () => '')
   const [compileError, setCompileError] = useState<string | null>(null)
   const [execError, setExecError] = useState<string | null>(null)
 
@@ -71,10 +68,8 @@ export function MatchText({ regex }: Args) {
         <label>
           <input
             type="checkbox"
-            onChange={(e) => {
-              setIgnoreCase(e.target.checked)
-              localStorage.setItem('playgroundIgnoreCase', e.target.checked ? 'true' : 'false')
-            }}
+            checked={ignoreCase}
+            onChange={(e) => setIgnoreCase(e.target.checked)}
           />
           Ignore case
         </label>
@@ -112,10 +107,7 @@ export function MatchText({ regex }: Args) {
         className={css.input}
         placeholder="Enter text to match..."
         value={matchText}
-        onChange={(e) => {
-          setMatchText(e.target.value)
-          localStorage.setItem('playgroundMatchText', e.target.value)
-        }}
+        onChange={(e) => setMatchText(e.target.value)}
       />
       {matches.length > 0 && <Matches matches={matches} string={matchText} />}
     </div>

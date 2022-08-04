@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { highlight } from '../editors/highlight'
 import { CompileResult } from '../editors/pomskySupport'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { ButtonSelect } from './ButtonSelect'
 import { Flavor } from './Editors'
 import { ErrorMessage } from './ErrorMessage'
@@ -26,7 +27,7 @@ const flavorMap: Record<Flavor, string> = {
 
 export function Output({ result, flavor, onFlavorChange }: Args) {
   const [cached, setCached] = useState('')
-  const [tab, setTab] = useState<'output' | 'match'>('output')
+  const [tab, setTab] = useLocalStorage<'output' | 'match'>('playgroundActiveTab', () => 'output')
 
   useEffect(() => {
     if (typeof result === 'string') {

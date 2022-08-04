@@ -6,6 +6,7 @@ import { completionItems } from '../editors/completions'
 import { defaultEditorSettings } from '../editors/editorSettings'
 import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
 import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import css from './Editors.module.scss'
 import { Output } from './Output'
 
@@ -85,16 +86,18 @@ async function initEditor(
 interface EditorProps {
   editorValue: string
   setEditorValue(newValue: string): void
+  tabSize: number
+  fontSize: number
 }
 
-export function Editors({ editorValue, setEditorValue }: EditorProps) {
+export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: EditorProps) {
   const editorElem = useRef<HTMLElement>()
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
 
   const [shouldInitialize, setShouldInitialize] = useState(false)
   const [wasmInit, setWasmInit] = useState(false)
   const [result, setResult] = useState<CompileResult>('')
-  const [flavor, setFlavor] = useState<Flavor>('js')
+  const [flavor, setFlavor] = useLocalStorage<Flavor>('playgroundFlavor', () => 'js')
 
   useEffect(() => {
     if (editorElem.current != null) {
@@ -116,6 +119,12 @@ export function Editors({ editorValue, setEditorValue }: EditorProps) {
       })
     }
   }, [shouldInitialize])
+
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.updateOptions({ fontSize, tabSize })
+    }
+  }, [tabSize, fontSize])
 
   useEffect(() => {
     if (!wasmInit) {
