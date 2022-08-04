@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { highlight } from '../editors/highlight'
 import { CompileResult } from '../editors/pomskySupport'
-import { Flavor, flavors } from './Editors'
+import { ButtonSelect } from './ButtonSelect'
+import { Flavor } from './Editors'
 import { ErrorMessage } from './ErrorMessage'
 import { MatchText } from './MatchText'
 import css from './Output.module.scss'
@@ -53,17 +54,12 @@ export function Output({ result, flavor, onFlavorChange }: Args) {
 
       {selectedTab === 'output' ? (
         <>
-          <div className={css.flavors}>
-            {flavors.map((f) => (
-              <button
-                key={f}
-                className={f === flavor ? css.active : ''}
-                onClick={() => onFlavorChange(f)}
-              >
-                {flavorMap[f]}
-              </button>
-            ))}
-          </div>
+          <ButtonSelect
+            value={flavor}
+            options={flavorMap}
+            maxWidth={550}
+            onChange={onFlavorChange}
+          />
           <ErrorMessage result={result} />
           <div className={css.regex} tabIndex={0}>
             {highlight(cached, 'regex')}

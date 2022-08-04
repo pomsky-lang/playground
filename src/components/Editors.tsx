@@ -19,7 +19,7 @@ let storeLocally = false
 function getEditorInitialValue() {
   const urlParamContent = urlParams.get('text')
   if (urlParamContent !== null) {
-    return decodeURIComponent(atob(urlParamContent))
+    return urlParamContent
   }
 
   storeLocally = true
@@ -82,13 +82,17 @@ async function initEditor(
   return pomskyEditor
 }
 
-export function Editors() {
+interface EditorProps {
+  editorValue: string
+  setEditorValue(newValue: string): void
+}
+
+export function Editors({ editorValue, setEditorValue }: EditorProps) {
   const editorElem = useRef<HTMLElement>()
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
 
   const [shouldInitialize, setShouldInitialize] = useState(false)
   const [wasmInit, setWasmInit] = useState(false)
-  const [editorValue, setEditorValue] = useState('')
   const [result, setResult] = useState<CompileResult>('')
   const [flavor, setFlavor] = useState<Flavor>('js')
 
