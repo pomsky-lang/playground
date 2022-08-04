@@ -5,7 +5,6 @@ import './index.css'
 
 declare global {
   interface Window {
-    MonacoEnvironment: { getWorker: () => Worker }
     currentEditorContent: string
   }
 }
