@@ -22,7 +22,11 @@ export function useLocalStorage<T>(
       }
       return value
     } else {
-      return JSON.parse(stored)
+      try {
+        return JSON.parse(stored)
+      } catch {
+        return defaultValue()
+      }
     }
   })
 
@@ -31,7 +35,9 @@ export function useLocalStorage<T>(
       if (event.newValue === null) {
         setValue(defaultValue())
       } else {
-        setValue(JSON.parse(event.newValue))
+        try {
+          setValue(JSON.parse(event.newValue))
+        } catch {}
       }
     }
   })
