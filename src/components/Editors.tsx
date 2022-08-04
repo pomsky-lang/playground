@@ -45,7 +45,21 @@ languages.setMonarchTokensProvider('pomsky', languageDefinition)
 languages.setLanguageConfiguration('pomsky', languageConfiguration)
 languages.registerCompletionItemProvider('pomsky', completionItems)
 
-editor.setTheme('vs-dark')
+editor.defineTheme('custom-dark', {
+  base: 'vs-dark',
+  inherit: true,
+  rules: [
+    { token: 'keyword', foreground: '69ace3' },
+    { token: 'string', foreground: 'dca088' },
+    { token: 'string.escape', foreground: 'ffcc77', fontStyle: 'bold' },
+    { token: 'string.invalid', foreground: 'ff0000', fontStyle: 'bold' },
+    { token: 'constant.numeric', foreground: 'b5cea8' },
+    { token: 'variable', foreground: '9cdcfe' },
+  ],
+  colors: {},
+})
+
+editor.setTheme('custom-dark')
 
 async function initEditor(
   editorTarget: HTMLElement,

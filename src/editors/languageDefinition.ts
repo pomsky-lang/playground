@@ -4,21 +4,34 @@ export const languageDefinition: languages.IMonarchLanguage = {
   tokenizer: {
     root: [
       [/\b(let|enable|disable|lazy|greedy|range|base)\b/, 'keyword'],
-      [/[$^%!*+?<>{}\-.]+/, 'keyword'],
+      [/[$^%!*+?<>{}|\-.]+/, 'keyword'],
       [/::?\w*/u, 'keyword'],
-      [/\d+/, 'variable'],
+      [/\d+/, 'constant.numeric.decimal'],
       [/U\+[0-9a-fA-F_]{1,6}/, 'type'],
-      [/\b[a-zA-Z_]\w*\b/, 'function'],
-      [/"(\\[\s\S]|[^"])*"/, 'string'],
-      [/'[^']*'/, 'string'],
+      [/\b[a-zA-Z_]\w*\b/, 'variable'],
+      [/"/, 'string', '@stringDoublePomsky'],
+      [/'/, 'string', '@stringSinglePomsky'],
       [/#.*/, 'comment'],
+    ],
+    stringDoublePomsky: [
+      [/[^\\"]+/, 'string'],
+      [/\\["\\]/, 'string.escape'],
+      [/\\/, 'string.invalid'],
+      [/"/, 'string', '@pop'],
+    ],
+    stringSinglePomsky: [
+      [/[^']+/, 'string'],
+      [/'/, 'string', '@pop'],
     ],
   },
 }
 
 export const languageConfiguration: languages.LanguageConfiguration = {
+  comments: {
+    lineComment: '#',
+  },
   autoClosingPairs: [
-    { open: '[', close: ']' },
+    { open: '[\\', close: ']' },
     { open: '(', close: ')' },
     { open: '{', close: '}' },
     { open: '"', close: '"' },
@@ -32,5 +45,21 @@ export const languageConfiguration: languages.LanguageConfiguration = {
   brackets: [
     ['(', ')'],
     ['[', ']'],
+  ],
+  onEnterRules: [
+    {
+      action: {
+        indentAction: languages.IndentAction.None,
+        appendText: '# ',
+      },
+      beforeText: /^\s*#/,
+    },
+    {
+      action: {
+        indentAction: languages.IndentAction.IndentOutdent,
+      },
+      beforeText: /\(\s*!?(<<|>>)?\s*$/,
+      afterText: /\)/,
+    },
   ],
 }

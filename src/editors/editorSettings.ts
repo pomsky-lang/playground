@@ -1,7 +1,7 @@
 import { editor } from 'monaco-editor'
 
 export const defaultEditorSettings: editor.IStandaloneEditorConstructionOptions = {
-  theme: 'vs-dark',
+  theme: 'custom-dark',
   automaticLayout: true,
   minimap: { enabled: false },
   wordWrap: window.innerWidth > 1000 ? 'on' : 'off',
