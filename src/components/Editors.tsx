@@ -123,6 +123,9 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.updateOptions({ fontSize, tabSize })
+    } else {
+      defaultEditorSettings.fontSize = fontSize
+      defaultEditorSettings.tabSize = tabSize
     }
   }, [tabSize, fontSize])
 
