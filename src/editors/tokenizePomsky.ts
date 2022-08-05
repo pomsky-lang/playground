@@ -3,7 +3,7 @@ const NO_ASCII_HEXDIGIT = /[^0-9a-fA-F]/
 const IS_LETTER = /\p{Alpha}/u
 const NO_WORD_CHAR = /[^\p{Alpha}\p{M}\p{Nd}_]/u
 
-const QUOTE_OR_BS = /[\\"]/
+const DOUBLE_QUOTED_STRING = /^"(?:\\[\s\S]|[^\\"])*"?/
 
 type Token =
   | 'Caret'
@@ -46,25 +46,14 @@ export function tokenizePomsky(input: string): [Token | TokenError, number, numb
 
   for (;;) {
     const inputLen = input.length
-    input = input.trim()
-    while (input.startsWith('#')) {
-      const lineBreakIdx = input.indexOf('\n')
-      if (lineBreakIdx !== -1) {
-        input = input.slice(lineBreakIdx + 1).trim()
-      } else {
-        input = ''
-      }
-    }
-
+    input = input.replace(/^(\s*|#.*)*/, '')
     offset += inputLen - input.length
 
     if (input.length === 0) {
       break
     }
 
-    const c = input.slice(0, 1)
-
-    const [len, token] = consumeChain(input, c)
+    const [len, token] = consumeChain(input)
 
     const start = offset
     offset += len
@@ -98,7 +87,9 @@ const singleTokens: { [token: string]: Token | TokenError } = {
   '=': 'Equals',
 }
 
-function consumeChain(input: string, char: string): [number, Token | TokenError] {
+function consumeChain(input: string): [number, Token | TokenError] {
+  const char = input[0]
+
   if (input.startsWith('<%')) return [2, 'BStart']
   if (input.startsWith('%>')) return [2, 'BEnd']
   if (input.startsWith('>>')) return [2, 'LookAhead']
@@ -107,7 +98,7 @@ function consumeChain(input: string, char: string): [number, Token | TokenError]
 
   if (char in singleTokens) return [1, singleTokens[char]]
 
-  if (char == "'") {
+  if (char === "'") {
     const lenInner = input.slice(1).indexOf("'")
     if (lenInner === -1) {
       return [input.length, { error: 'UnclosedString' }]
@@ -116,7 +107,7 @@ function consumeChain(input: string, char: string): [number, Token | TokenError]
     }
   }
 
-  if (char == '"') {
+  if (char === '"') {
     const len = findLengthOfDoubleQuotedString(input)
     if (len !== undefined) {
       return [len, 'String']
@@ -151,22 +142,69 @@ function consumeChain(input: string, char: string): [number, Token | TokenError]
 }
 
 function findLengthOfDoubleQuotedString(input: string): number | undefined {
-  let index = 1
+  DOUBLE_QUOTED_STRING.lastIndex = 0
+  const res = DOUBLE_QUOTED_STRING.exec(input)
+  return res![0].length
+}
+
+export function findClosestTokenIndex(
+  tokens: [Token | TokenError, number, number][],
+  offset: number,
+): number {
+  let lowerBound = 0
+  let upperBound = tokens.length
 
   for (;;) {
-    QUOTE_OR_BS.lastIndex = index
-    QUOTE_OR_BS.test(input)
-    const li = QUOTE_OR_BS.lastIndex
-    if (li === 0) {
-      return
+    if (upperBound - lowerBound <= 1) {
+      return lowerBound
     }
 
-    if (input[li - 1] === '"') {
-      return li
-    } else if (li <= input.length) {
-      index = li
+    const middle = (upperBound + lowerBound) >> 1
+    const middleToken = tokens[middle]
+    if (offset < middleToken[1]) {
+      upperBound = middle
+    } else if (offset > middleToken[2]) {
+      lowerBound = middle
+    } else if (offset === middleToken[1]) {
+      // ___XXX___
+      //   /\
+      return middle > 0 && offset === tokens[middle - 1][2] ? middle - 1 : middle
     } else {
-      return
+      // ___XXX___
+      //    /##\
+      return middle
     }
   }
+}
+
+const tokensAllowedInClass: Partial<Record<Token, true>> = {
+  Not: true,
+  Dash: true,
+  Dot: true,
+  String: true,
+  CodePoint: true,
+  Identifier: true,
+}
+
+export function isInCharacterSet(
+  tokens: [Token | TokenError, number, number][],
+  index: number,
+  offset: number,
+): boolean {
+  const token = tokens[index]
+
+  const previousTokens = tokens.slice(0, index + 1)
+  if (token[1] >= offset) {
+    previousTokens.pop()
+  }
+  for (let i = previousTokens.length - 1; i >= 0; i--) {
+    const pt = previousTokens[i]
+    if (pt[0] === 'OpenBracket') {
+      return true
+    } else if (typeof pt[0] === 'string' && !tokensAllowedInClass[pt[0]]) {
+      return false
+    }
+  }
+
+  return false
 }

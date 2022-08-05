@@ -15,4 +15,5 @@ export const defaultEditorSettings: editor.IStandaloneEditorConstructionOptions 
   fontSize: window.innerWidth > 800 ? 17 : window.innerWidth > 560 ? 16 : 15,
   lineNumbers: window.innerWidth > 800 ? 'on' : 'off',
   padding: { top: 6, bottom: 6 },
+  wordBasedSuggestions: false,
 }
