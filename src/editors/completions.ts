@@ -86,7 +86,7 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
   },
   {
     label: 'let',
-    insertText: 'let ${1:var_name} = ${2:expression};\n',
+    insertText: 'let ${1:var_name} = $0;\n',
     detail: 'snippet',
     documentation: {
       value: 'Declares a variable.',
