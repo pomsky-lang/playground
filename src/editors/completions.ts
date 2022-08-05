@@ -17,6 +17,38 @@ const completionRange = {
   endLineNumber: 1,
 }
 
+/**
+ * Template literal for markdown documentation. Because I don't like escaping backticks,
+ * double quotes are substituted with backticks.
+ */
+function doc(input: TemplateStringsArray): { value: string } {
+  const lines = input.raw[0].split('\n')
+
+  if (lines.length && lines[0].trim() === '') {
+    lines.shift()
+  }
+  if (lines.length && lines[lines.length - 1].trim() === '') {
+    lines.pop()
+  }
+
+  function substituteQuotes(s: string) {
+    return s.replace(/\\?"/g, (v) => (v.length === 2 ? `"` : '`'))
+  }
+
+  let indent = -1
+  for (let i = 0; i < lines.length; i++) {
+    if (indent === -1) {
+      const trimmed = lines[i].trimStart()
+      indent = lines[i].length - trimmed.length
+      lines[i] = substituteQuotes(trimmed)
+    } else {
+      lines[i] = substituteQuotes(lines[i].slice(indent))
+    }
+  }
+
+  return { value: lines.join('\n') }
+}
+
 const globalSnippets: languages.CompletionItem[] = detailedCompletions([
   {
     label: 'Start',
@@ -58,10 +90,15 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     label: 'range',
     insertText: "range '${1:0}'-'${2:255}'",
     detail: 'snippet',
-    documentation: {
-      value:
-        "Matches a range of numbers. Use this if the number may be more than 1 code point.\n\n### Examples:\n```pomsky\nrange '0'-'255'\nrange '0'-'10FFFF' base 16\n```",
-    },
+    documentation: doc`
+      Matches a range of numbers. Use this if the number may be more than 1 code point.
+
+      ### Examples:
+      """pomsky
+      range '0'-'255'
+      range '0'-'10FFFF' base 16
+      """
+      `,
     kind: languages.CompletionItemKind.Snippet,
     insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
   },
@@ -69,28 +106,34 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     label: 'enable',
     insertText: 'enable lazy;\n',
     detail: 'snippet',
-    documentation: {
-      value: 'Makes lazy matching the default.',
-    },
+    documentation: doc`
+      Makes lazy matching the default.`,
     kind: languages.CompletionItemKind.Snippet,
   },
   {
     label: 'disable',
     insertText: 'disable lazy;\n',
     detail: 'snippet',
-    documentation: {
-      value:
-        'Makes greedy matching the default.\n\nNote that greedy matching is usually the default, unless `enable lazy;` was used.',
-    },
+    documentation: doc`
+      Makes greedy matching the default.
+      
+      Note that greedy matching is usually the default, unless "enable lazy;" was used.
+      `,
     kind: languages.CompletionItemKind.Snippet,
   },
   {
     label: 'let',
     insertText: 'let ${1:var_name} = $0;\n',
     detail: 'snippet',
-    documentation: {
-      value: 'Declares a variable.',
-    },
+    documentation: doc`
+      Declares a variable.
+      
+      ### Example
+      """pomsky
+      let greeting = 'Hello';
+      greeting ' world'
+      """
+      `,
     kind: languages.CompletionItemKind.Snippet,
     insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
   },
@@ -98,29 +141,43 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
   {
     label: 'lazy',
     detail: 'keyword',
-    documentation: {
-      value:
-        "Keyword to make the previous repetition lazy. Opposite of `greedy`.\n\n### Example:\n```pomsky\n['test']? lazy\n```",
-    },
+    documentation: doc`
+      Keyword to make the previous repetition lazy. Opposite of "greedy".
+      
+      ### Example:
+      """pomsky
+      ['test']? lazy
+      """
+      `,
     kind: languages.CompletionItemKind.Keyword,
   },
   {
     label: 'greedy',
     detail: 'keyword',
-    documentation: {
-      value:
-        "Keyword to make the previous repetition greedy. Opposite of `lazy`.\nSince `greedy` is the default, you only need this when you enabled `lazy` mode.\n\n### Example:\n```pomsky\nenable lazy;\n['test']? greedy\n```",
-    },
+    documentation: doc`
+      Keyword to make the previous repetition greedy. Opposite of "lazy".
+      Since "greedy" is the default, you only need this when you enabled "lazy" mode.
+      
+      ### Example:
+      """pomsky
+      enable lazy;
+      ['test']? greedy
+      """
+      `,
     kind: languages.CompletionItemKind.Keyword,
   },
   // TODO: only show after range
   {
     label: 'base',
     detail: 'keyword',
-    documentation: {
-      value:
-        "Comes after a `range` expression to set the number base, e.g. 16 for hexadecimal.\n\n### Example:\n```pomsky\nrange '0'-'FFF' base 16\n```",
-    },
+    documentation: doc`
+      Comes after a "range" expression to set the number base, e.g. 16 for hexadecimal.
+      
+      ### Example:
+      """pomsky
+      range '0'-'FFF' base 16
+      """
+      `,
     kind: languages.CompletionItemKind.Keyword,
   },
 ])
