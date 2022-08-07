@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { tokenizeRegex } from './tokenizeRegex'
 
-export function highlight(text: string, language: 'regex'): ReactNode[] {
+export function highlightRegex(text: string): ReactNode[] {
   const spans = tokenizeRegex(text)
   let offset = 0
   let key = 0

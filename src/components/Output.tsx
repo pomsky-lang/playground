@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { highlight } from '../editors/highlight'
+import { highlightRegex } from '../editors/highlight'
 import { CompileResult } from '../editors/pomskySupport'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { ButtonSelect } from './ButtonSelect'
@@ -30,12 +30,12 @@ export function Output({ result, flavor, onFlavorChange }: Args) {
   const [tab, setTab] = useLocalStorage<'output' | 'match'>('playgroundActiveTab', () => 'output')
 
   useEffect(() => {
-    if (typeof result === 'string') {
-      setCached(result)
+    if (result.output != null) {
+      setCached(result.output)
     }
   }, [result])
 
-  const matchIsDisabled = typeof result !== 'string' || flavor !== 'js'
+  const matchIsDisabled = result.output == null || flavor !== 'js'
   const selectedTab = tab === 'output' || matchIsDisabled ? 'output' : 'match'
 
   return (
@@ -63,7 +63,7 @@ export function Output({ result, flavor, onFlavorChange }: Args) {
           />
           <ErrorMessage result={result} />
           <div className={css.regex} tabIndex={0}>
-            {highlight(cached, 'regex')}
+            {highlightRegex(cached)}
           </div>
         </>
       ) : (

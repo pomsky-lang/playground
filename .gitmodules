@@ -1,0 +1,3 @@
+[submodule "pomsky"]
+	path = pomsky
+	url = https://github.com/rulex-rs/pomsky

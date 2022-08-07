@@ -11,7 +11,7 @@
     "monaco-editor": "^0.34.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "pomsky-play": "file:./pomsky-play/pkg",
+    "pomsky-wasm": "file:./pomsky/pomsky-wasm/pkg",
     "sass": "^1.54.2"
   },
   "devDependencies": {

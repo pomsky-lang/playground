@@ -1,35 +1,64 @@
 import { editor, MarkerSeverity } from 'monaco-editor'
-import init, { compile } from '../../pomsky-play/pkg/pomsky_play.js'
+import init, {
+  compile,
+  PomskyDiagnostic,
+  PomskyError,
+} from '../../pomsky/pomsky-wasm/pkg/pomsky_wasm.js'
 
 export { init }
 
-export type CompileResult = string | (editor.IMarkerData & { title: string; help?: string })
+export interface CompileResult {
+  output?: string
+  diagnostics?: Diagnostic[]
+}
+
+export interface Diagnostic extends editor.IMarkerData {
+  title: string
+  help?: string
+}
 
 export function compilePomsky(input: string, options?: { flavor?: string }): CompileResult {
-  const [success, output, help, s_prefix, s_content]: [boolean, ...string[]] = compile(
-    input,
-    options?.flavor ?? 'js',
-  ) as any
-
-  if (success) {
-    return output
-  } else {
-    const lines1 = s_prefix.split('\n')
-    const lines2 = s_content.split('\n')
-    const last1 = lines1[lines1.length - 1] ?? ''
-    const last2 = lines2[lines2.length - 1] ?? ''
-    const start1 = last1.length + 1
-    const start2 = lines2.length > 1 ? last2.length + 1 : last2.length + start1
-
+  try {
+    const { output, warnings } = compile(input, options?.flavor ?? 'js')
     return {
-      severity: MarkerSeverity.Error,
-      startColumn: start1,
-      startLineNumber: lines1.length,
-      endColumn: start2,
-      endLineNumber: lines1.length + lines2.length - 1,
-      message: help != null ? `${output}\n\nHelp: ${help}` : output,
-      title: output,
-      help,
+      output,
+      diagnostics: warnings.map((w) => convert(input, MarkerSeverity.Warning, w)),
     }
+  } catch (e) {
+    if (typeof e !== 'object' || e === null || !('diagnostics' in e)) {
+      console.error(e)
+      return {
+        diagnostics: [],
+      }
+    }
+
+    const { diagnostics } = e as PomskyError
+    return {
+      diagnostics: diagnostics.map((w) => convert(input, MarkerSeverity.Error, w)),
+    }
+  }
+}
+
+function convert(
+  input: string,
+  severity: MarkerSeverity,
+  { help, message, range: [start, end] }: PomskyDiagnostic,
+): Diagnostic {
+  const lines1 = input.slice(0, start).split('\n')
+  const lines2 = input.slice(start, end).split('\n')
+  const last1 = lines1[lines1.length - 1] ?? ''
+  const last2 = lines2[lines2.length - 1] ?? ''
+  const start1 = last1.length + 1
+  const start2 = lines2.length > 1 ? last2.length + 1 : last2.length + start1
+
+  return {
+    severity,
+    startColumn: start1,
+    startLineNumber: lines1.length,
+    endColumn: start2,
+    endLineNumber: lines1.length + lines2.length - 1,
+    message: help != null ? `${message}\n\nHelp: ${help}` : message,
+    title: message,
+    help: help ?? undefined,
   }
 }

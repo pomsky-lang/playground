@@ -1,5 +1,5 @@
 import { editor, languages } from 'monaco-editor'
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { useEffect, useRef, useState } from 'react'
 import { completionItems } from '../editors/completions'
 
@@ -37,7 +37,7 @@ function getEditorInitialValue() {
 const initialValue = getEditorInitialValue()
 
 window.MonacoEnvironment = {
-  getWorker: () => new editorWorker(),
+  getWorker: () => new EditorWorker(),
 }
 
 languages.register({ id: 'pomsky' })
@@ -110,7 +110,7 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
 
   const [shouldInitialize, setShouldInitialize] = useState(false)
   const [wasmInit, setWasmInit] = useState(false)
-  const [result, setResult] = useState<CompileResult>('')
+  const [result, setResult] = useState<CompileResult>({ output: '' })
   const [flavor, setFlavor] = useLocalStorage<Flavor>('playgroundFlavor', () => 'js')
 
   useEffect(() => {
@@ -158,7 +158,7 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
     const pomskyEditor = editorRef.current
     if (pomskyEditor == null) return
 
-    editor.setModelMarkers(pomskyEditor.getModel()!, '', typeof result === 'string' ? [] : [result])
+    editor.setModelMarkers(pomskyEditor.getModel()!, '', result.diagnostics ?? [])
   }, [result])
 
   const editorStyle =
