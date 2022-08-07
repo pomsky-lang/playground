@@ -5,7 +5,7 @@ import { completionItems } from '../editors/completions'
 
 import { defaultEditorSettings } from '../editors/editorSettings'
 import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
-import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
+import { compilePomsky, CompileResult } from '../editors/pomskySupport'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import css from './Editors.module.scss'
 import { Output } from './Output'
@@ -109,8 +109,7 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
 
   const [shouldInitialize, setShouldInitialize] = useState(false)
-  const [wasmInit, setWasmInit] = useState(false)
-  const [result, setResult] = useState<CompileResult>('')
+  const [result, setResult] = useState<CompileResult>({ output: '' })
   const [flavor, setFlavor] = useLocalStorage<Flavor>('playgroundFlavor', () => 'js')
 
   useEffect(() => {
@@ -144,21 +143,14 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
   }, [tabSize, fontSize])
 
   useEffect(() => {
-    if (!wasmInit) {
-      init().then(() => {
-        setWasmInit(true)
-        setResult(compilePomsky(editorValue, { flavor }))
-      })
-    } else {
-      setResult(compilePomsky(editorValue, { flavor }))
-    }
+    setResult(compilePomsky(editorValue, { flavor }))
   }, [editorValue, flavor])
 
   useEffect(() => {
     const pomskyEditor = editorRef.current
     if (pomskyEditor == null) return
 
-    editor.setModelMarkers(pomskyEditor.getModel()!, '', typeof result === 'string' ? [] : [result])
+    editor.setModelMarkers(pomskyEditor.getModel()!, '', result.diagnostics ?? [])
   }, [result])
 
   const editorStyle =

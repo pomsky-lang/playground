@@ -18,24 +18,6 @@ jobs:
           node-version: '17'
           cache: 'yarn'
 
-      - name: 🚚 Install wasm-pack
-        uses: jetli/wasm-pack-action@v0.3.0
-        with:
-          version: 'latest'
-
-      - name: ⚡ Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            pomsky-play/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: 🔧 Build pomsky WASM
-        working-directory: ./pomsky-play
-        run: wasm-pack build --target web
-
       - name: 🚚 Install dependencies
         run: yarn
 
