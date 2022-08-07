@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "monaco-editor": "^0.34.0",
+    "pomsky-wasm": "file:./pomsky/pomsky-wasm/pkg",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "pomsky-wasm": "file:./pomsky/pomsky-wasm/pkg",
     "sass": "^1.54.2"
   },
   "devDependencies": {

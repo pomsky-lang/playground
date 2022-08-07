@@ -44,7 +44,7 @@ jobs:
 
       - name: 🔧 Build pomsky WASM
         working-directory: ./pomsky/pomsky-wasm
-        run: wasm-pack build --target web
+        run: wasm-pack build --target=web -- --features=suggestions
 
       - name: 🚚 Install dependencies
         run: yarn
