@@ -47,15 +47,15 @@
     :global(.brace),
     :global(.dash),
     :global(.dot) {
-      color: #569cd6;
+      color: var(--regex-color-1);
     }
 
     :global(.string) {
-      color: #ce9178;
+      color: var(--regex-color-2);
     }
 
     :global(.escape) {
-      color: #3dc9b0;
+      color: var(--regex-color-3);
     }
   }
 }
