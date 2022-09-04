@@ -3,7 +3,7 @@
   display: flex;
   width: 100vw;
   top: 0;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - var(--header-height));
 
   @media (max-width: 800px) {
     flex-direction: column;
@@ -12,7 +12,7 @@
   .pomskyPart,
   .regexPart {
     width: 50vw;
-    background-color: #1e1e1e;
+    background-color: var(--bg-content);
 
     @media (max-width: 800px) {
       width: 100vw;
@@ -21,10 +21,10 @@
 
   .regexPart {
     flex-grow: 1;
-    border: 1px solid #7773;
+    border: 1px solid var(--line-shadow);
     border-width: 0 0 0 1px;
     box-sizing: border-box;
-    color: white;
+    color: var(--fg-color);
     overflow: auto;
 
     @media (max-width: 800px) {
@@ -32,10 +32,10 @@
     }
 
     .error {
-      color: #ff5a5a;
+      color: var(--error-fg);
     }
     .help {
-      color: #63b6ff;
+      color: var(--help-fg);
     }
 
     :global(.modifier),

@@ -1,11 +1,13 @@
 import { editor, languages } from 'monaco-editor'
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { useEffect, useRef, useState } from 'react'
-import { completionItems } from '../editors/completions'
+import { completionItems } from '../monacoConfig/completionItems'
 
-import { defaultEditorSettings } from '../editors/editorSettings'
-import { languageConfiguration, languageDefinition } from '../editors/languageDefinition'
+import { defaultEditorSettings } from '../monacoConfig/editorSettings'
+import { languageDefinition } from '../monacoConfig/languageDefinition'
+import { languageConfiguration } from '../monacoConfig/languageConfiguration'
 import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
+import { currentPreferredColorScheme } from '../hooks/useColorScheme'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import css from './Editors.module.scss'
 import { Output } from './Output'
@@ -59,16 +61,31 @@ editor.defineTheme('custom-dark', {
   colors: {},
 })
 
-editor.setTheme('custom-dark')
+editor.defineTheme('custom-light', {
+  base: 'vs',
+  inherit: true,
+  rules: [
+    { token: 'keyword', foreground: '0000ff' },
+    { token: 'string', foreground: 'a31515' },
+    { token: 'string.escape', foreground: '734141', fontStyle: 'bold' },
+    { token: 'string.invalid', foreground: 'ff0000', fontStyle: 'bold' },
+    { token: 'constant.numeric', foreground: '097000' },
+    { token: 'variable', foreground: '000000' },
+  ],
+  colors: {},
+})
+
+editor.setTheme(currentPreferredColorScheme().preferDark ? 'custom-dark' : 'custom-light')
 
 async function initEditor(
   editorTarget: HTMLElement,
   setResult: (value: string) => void,
 ): Promise<editor.IStandaloneCodeEditor> {
   const pomskyEditor = editor.create(editorTarget, {
+    ...defaultEditorSettings,
     value: initialValue,
     language: 'pomsky',
-    ...defaultEditorSettings,
+    theme: currentPreferredColorScheme().preferDark ? 'custom-dark' : 'custom-light',
   })
 
   const lines = initialValue.split('\n')
@@ -163,7 +180,7 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
 
   const editorStyle =
     window.innerWidth > 800
-      ? { height: 'calc(100vh - 60px)', width: '50vw' }
+      ? { height: 'calc(100vh - var(--header-height))', width: '50vw' }
       : { height: 'min(50vh, 400px)', width: '100vw' }
 
   return (

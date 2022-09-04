@@ -1,13 +1,16 @@
-import { IMarkdownString, IRange, languages, Token } from 'monaco-editor'
-import { findClosestTokenIndex, isInCharacterSet, tokenizePomsky } from './tokenizePomsky'
+import { IMarkdownString, languages } from 'monaco-editor'
+
+import CompletionItem = languages.CompletionItem
+import CompletionItemKind = languages.CompletionItemKind
+import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule
 
 interface Snippet {
   label: string
   insertText?: string
   detail: string
   documentation: string | IMarkdownString
-  kind?: languages.CompletionItemKind
-  insertTextRules?: languages.CompletionItemInsertTextRule
+  kind?: CompletionItemKind
+  insertTextRules?: CompletionItemInsertTextRule
 }
 
 const completionRange = {
@@ -17,14 +20,14 @@ const completionRange = {
   endLineNumber: 1,
 }
 
-const globalSnippets: languages.CompletionItem[] = detailedCompletions([
+export const globalSnippets: CompletionItem[] = detailedCompletions([
   {
     label: 'Start',
     detail: 'built-in',
     documentation: {
       value: 'Start of the string. Equivalent to `^`.',
     },
-    kind: languages.CompletionItemKind.Value,
+    kind: CompletionItemKind.Value,
   },
   {
     label: 'End',
@@ -32,7 +35,7 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     documentation: {
       value: 'End of the string. Equivalent to `$`.',
     },
-    kind: languages.CompletionItemKind.Value,
+    kind: CompletionItemKind.Value,
   },
   {
     label: 'Codepoint',
@@ -40,7 +43,7 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     documentation: {
       value: 'A single code point.',
     },
-    kind: languages.CompletionItemKind.Value,
+    kind: CompletionItemKind.Value,
   },
   {
     label: 'C',
@@ -48,7 +51,7 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     documentation: {
       value: 'A single code point.',
     },
-    kind: languages.CompletionItemKind.Value,
+    kind: CompletionItemKind.Value,
   },
   {
     label: 'Grapheme',
@@ -56,7 +59,7 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     documentation: {
       value: 'A single grapheme cluster.',
     },
-    kind: languages.CompletionItemKind.Value,
+    kind: CompletionItemKind.Value,
   },
   {
     label: 'G',
@@ -64,7 +67,7 @@ const globalSnippets: languages.CompletionItem[] = detailedCompletions([
     documentation: {
       value: 'A single grapheme cluster.',
     },
-    kind: languages.CompletionItemKind.Value,
+    kind: CompletionItemKind.Value,
   },
   {
     label: 'range',
@@ -79,8 +82,8 @@ range '0'-'255'
 range '0'-'10FFFF' base 16
 ~~~`,
     },
-    kind: languages.CompletionItemKind.Snippet,
-    insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+    kind: CompletionItemKind.Snippet,
+    insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
   },
   {
     label: 'enable',
@@ -89,7 +92,7 @@ range '0'-'10FFFF' base 16
     documentation: {
       value: `Makes lazy matching the default.`,
     },
-    kind: languages.CompletionItemKind.Snippet,
+    kind: CompletionItemKind.Snippet,
   },
   {
     label: 'disable',
@@ -100,7 +103,7 @@ range '0'-'10FFFF' base 16
 
 Note that greedy matching is usually the default, unless \`enable lazy;\` was used.`,
     },
-    kind: languages.CompletionItemKind.Snippet,
+    kind: CompletionItemKind.Snippet,
   },
   {
     label: 'let',
@@ -115,8 +118,8 @@ let greeting = 'Hello';
 greeting ' world'
 ~~~`,
     },
-    kind: languages.CompletionItemKind.Snippet,
-    insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+    kind: CompletionItemKind.Snippet,
+    insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
   },
   // TODO: only show after repetition
   {
@@ -130,7 +133,7 @@ greeting ' world'
 ['test']? lazy
 ~~~`,
     },
-    kind: languages.CompletionItemKind.Keyword,
+    kind: CompletionItemKind.Keyword,
   },
   {
     label: 'greedy',
@@ -145,7 +148,7 @@ enable lazy;
 ['test']? greedy
 ~~~`,
     },
-    kind: languages.CompletionItemKind.Keyword,
+    kind: CompletionItemKind.Keyword,
   },
   // TODO: only show after range
   {
@@ -159,11 +162,11 @@ enable lazy;
 range '0'-'FFF' base 16
 ~~~`,
     },
-    kind: languages.CompletionItemKind.Keyword,
+    kind: CompletionItemKind.Keyword,
   },
 ])
 
-const charSetSnippets: languages.CompletionItem[] = [
+export const charSetSnippets: CompletionItem[] = [
   ...prepareChars([
     ['n', 'The _newline_ character `\\n`'],
     ['r', 'The _carriage_ return character `\\n`'],
@@ -556,9 +559,9 @@ const charSetSnippets: languages.CompletionItem[] = [
   ]),
 ]
 
-function detailedCompletions(snippets: Snippet[]): languages.CompletionItem[] {
+function detailedCompletions(snippets: Snippet[]): CompletionItem[] {
   return snippets.map(({ label, insertText, insertTextRules, documentation, detail, kind }) => ({
-    kind: kind ?? languages.CompletionItemKind.Text,
+    kind: kind ?? CompletionItemKind.Text,
     label,
     insertText: insertText ?? label,
     insertTextRules,
@@ -568,8 +571,8 @@ function detailedCompletions(snippets: Snippet[]): languages.CompletionItem[] {
   }))
 }
 
-function unicodeCompletions(name: string, items: string[]): languages.CompletionItem[] {
-  return items.flatMap((item): languages.CompletionItem[] => {
+function unicodeCompletions(name: string, items: string[]): CompletionItem[] {
+  return items.flatMap((item): CompletionItem[] => {
     const [first, ...rest] = item.split(', ')
     return [
       {
@@ -580,7 +583,7 @@ function unicodeCompletions(name: string, items: string[]): languages.Completion
           value: `The \`${first}\` ${name}`,
         },
         range: completionRange,
-        kind: languages.CompletionItemKind.Constant,
+        kind: CompletionItemKind.Constant,
       },
       ...rest.map((label) => ({
         label,
@@ -590,65 +593,21 @@ function unicodeCompletions(name: string, items: string[]): languages.Completion
           value: `Alias for the \`${first}\` ${name}`,
         },
         range: completionRange,
-        kind: languages.CompletionItemKind.Constant,
+        kind: CompletionItemKind.Constant,
       })),
     ]
   })
 }
 
-function prepareChars(items: [string, string][]): languages.CompletionItem[] {
+function prepareChars(items: [string, string][]): CompletionItem[] {
   return items.map(
-    ([label, documentation]): languages.CompletionItem => ({
+    ([label, documentation]): CompletionItem => ({
       label,
       insertText: label,
       detail: 'character',
       documentation: { value: documentation },
-      kind: languages.CompletionItemKind.Text,
+      kind: CompletionItemKind.Text,
       range: completionRange,
     }),
   )
-}
-
-export const completionItems: languages.CompletionItemProvider = {
-  provideCompletionItems(model, position) {
-    const value = model.getValue()
-    const tokens = tokenizePomsky(value)
-
-    const offset = model.getOffsetAt(position)
-    let tokenIndex = findClosestTokenIndex(tokens, offset)
-    let isInCharClass = false
-
-    if (tokenIndex < tokens.length) {
-      // don't show completions within strings or multi-char sigils such as `<<`
-      const token = tokens[tokenIndex]
-      if (token[0] !== 'Identifier' && offset > token[1] && offset < token[2]) return
-
-      isInCharClass = isInCharacterSet(tokens, tokenIndex, offset)
-    }
-
-    const wordModel = model.getWordAtPosition(position)
-
-    // This implicitly updates all snippets, which reference this object
-    completionRange.startColumn = wordModel?.startColumn ?? position.column
-    completionRange.endColumn = wordModel?.endColumn ?? position.column
-    completionRange.startLineNumber = position.lineNumber
-    completionRange.endLineNumber = position.lineNumber
-
-    const suggestions = isInCharClass
-      ? charSetSnippets
-      : [
-          ...[...new Set([...value.matchAll(/\blet (\w+)/gi)].map((x) => x[1]))].map(
-            (word): languages.CompletionItem => ({
-              kind: languages.CompletionItemKind.Variable,
-              label: word,
-              insertText: word,
-              detail: 'variable',
-              range: completionRange,
-            }),
-          ),
-          ...globalSnippets,
-        ]
-
-    return { suggestions }
-  },
 }

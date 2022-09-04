@@ -14,21 +14,21 @@
   }
 
   .errorPanel {
-    background-color: #3f0c0c;
+    background-color: var(--error-bg);
     padding: 0.8rem;
-    border-top: 1px solid #99999933;
+    border-top: 1px solid var(--line-shadow);
 
     b {
-      color: #ffaaaa;
+      color: var(--error-fg-2);
     }
 
     .bug {
       margin-top: 0.5rem;
       font-size: 1rem;
-      color: #fffc;
+      color: var(--fg-color);
 
       a {
-        color: #acdfff;
+        color: var(--link-color);
       }
     }
   }
@@ -37,9 +37,9 @@
     display: block;
     box-sizing: border-box;
     width: 100%;
-    background-color: #7771;
+    background-color: var(--bg-shiny);
     color: inherit;
-    border: 1px solid #99999933;
+    border: 1px solid var(--line-shadow);
     border-width: 1px 0;
     min-height: 6rem;
     font-size: inherit;
@@ -49,8 +49,8 @@
     resize: vertical;
 
     &:focus {
-      box-shadow: 0 0 0 3px #004cb7;
-      border-color: #0c65ff;
+      box-shadow: 0 0 0 3px var(--ta-focus);
+      border-color: var(--ta-focus-border);
       outline: none;
     }
   }
@@ -59,7 +59,7 @@
     color: #777;
 
     &.success {
-      color: #0cff30;
+      color: var(--success);
     }
   }
 }

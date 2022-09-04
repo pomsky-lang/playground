@@ -1,25 +1,6 @@
 .flavors {
   padding: 0.5rem;
-  border-bottom: 1px solid #99999933;
-
-  button {
-    color: inherit;
-    font: inherit;
-    font-size: 1rem;
-    background-color: transparent;
-    border: none;
-    margin: 0;
-    padding: 0.2rem 0.7rem;
-    border-radius: 50px;
-
-    &:hover {
-      background-color: #0f3378;
-    }
-
-    &.active {
-      background-color: #0059ff;
-    }
-  }
+  border-bottom: 1px solid var(--line-shadow);
 }
 
 .regex {

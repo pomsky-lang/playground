@@ -3,13 +3,13 @@
   font-variant-ligatures: none;
   white-space: pre-wrap;
   padding: 0.75rem 0.5rem;
-  color: #ccc;
+  color: var(-fg-content-2);
 
   $matchColor: #0537ca;
 
   .match {
     background-color: $matchColor;
-    text-shadow: 0 0 3px #0004;
+    text-shadow: 0 0 3px var(--msg-text-shadow);
     box-shadow: inset -2px -2px 0 lighten($matchColor, 10%);
     border-radius: 4px;
     color: white;
@@ -33,7 +33,7 @@
 
 .detail {
   padding: 0.5rem;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--line-shadow);
 
   .detailTitle {
     float: left;
@@ -50,7 +50,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-variant-ligatures: none;
     white-space: pre-wrap;
-    background-color: #0e0e0e;
+    background-color: var(--bg-shiny);
     padding: 0 5px;
     border-radius: 0.2rem;
   }
@@ -71,7 +71,7 @@
         white-space: pre-wrap;
 
         &:not(:empty) {
-          background-color: #0e0e0e;
+          background-color: var(--bg-shiny);
           padding: 0 5px;
           border-radius: 0.2rem;
         }

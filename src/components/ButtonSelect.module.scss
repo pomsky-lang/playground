@@ -1,7 +1,7 @@
 .buttonSelect,
 .nativeSelect {
   padding: 0.5rem;
-  border-bottom: 1px solid #99999933;
+  border-bottom: 1px solid var(--line-shadow);
 
   select,
   button {
@@ -15,16 +15,17 @@
     border-radius: 50px;
 
     &:hover {
-      background-color: #0f3378;
+      background-color: var(--button-select-hover);
     }
   }
 
   select,
   button.active {
-    background-color: #0059ff;
+    color: white;
+    background-color: var(--button-select-active);
 
     &:hover {
-      background-color: #0b49ba;
+      background-color: var(--button-select-active);
     }
   }
 }
