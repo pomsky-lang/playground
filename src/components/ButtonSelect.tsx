@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useWindowHeight, useWindowWidth } from '../hooks/useWindowSize'
+import { useWindowWidth } from '../hooks'
 import css from './ButtonSelect.module.scss'
 
 export interface ButtonSelectProps<T extends string> {

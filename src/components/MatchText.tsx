@@ -1,5 +1,5 @@
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocalStorage } from '../hooks'
 import { Matches } from './Matches'
 import css from './MatchText.module.scss'
 

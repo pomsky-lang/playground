@@ -2,8 +2,14 @@ import { useEffect, useState } from 'react'
 
 const matchMedia = window.matchMedia('(prefers-color-scheme: dark)')
 
-export function currentPreferredColorScheme() {
+export function currentPrefColorScheme() {
   return { preferDark: matchMedia.matches }
+}
+
+export function addPrefColorSchemeListener(listener: (e: { preferDark: boolean }) => void) {
+  matchMedia.addEventListener('change', () => {
+    listener({ preferDark: matchMedia.matches })
+  })
 }
 
 export function usePreferredColorScheme() {

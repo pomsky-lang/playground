@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useWindowWidth } from '../hooks/useWindowSize'
+import { useWindowWidth, useLocalStorage } from '../hooks'
 import css from './App.module.scss'
 import { Editors } from './Editors'
 import burger from '../assets/burger.svg?raw'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useEditorValue } from '../hooks/useEditorValue'
 
 export function App() {
-  const [editorValue, setEditorValue] = useState('')
+  const [editorValue, setEditorValue] = useEditorValue()
   const [copied, setCopied] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 

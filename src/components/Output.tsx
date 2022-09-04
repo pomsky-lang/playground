@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { highlightRegex } from '../editors/highlight'
 import { CompileResult } from '../editors/pomskySupport'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useLocalStorage } from '../hooks'
 import { ButtonSelect } from './ButtonSelect'
 import { Flavor } from './Editors'
 import { ErrorMessage } from './ErrorMessage'
