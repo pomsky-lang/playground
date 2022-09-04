@@ -8,4 +8,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     sourcemap: true,
   },
+  optimizeDeps: {
+    exclude: mode === 'production' ? [] : ['pomsky-wasm'],
+  },
 }))

@@ -1,9 +1,5 @@
 import { editor, MarkerSeverity } from 'monaco-editor'
-import init, {
-  compile,
-  PomskyDiagnostic,
-  PomskyError,
-} from '../../pomsky/pomsky-wasm/pkg/pomsky_wasm.js'
+import init, { compile, PomskyDiagnostic, PomskyError } from 'pomsky-wasm'
 
 export { init }
 

@@ -8,8 +8,6 @@ const DOUBLE_QUOTED_STRING = /^"(?:\\[\s\S]|[^\\"])*"?/
 type Token =
   | 'Caret'
   | 'Dollar'
-  | 'BStart'
-  | 'BEnd'
   | 'LookAhead'
   | 'LookBehind'
   | 'Backref'
@@ -90,8 +88,6 @@ const singleTokens: { [token: string]: Token | TokenError } = {
 function consumeChain(input: string): [number, Token | TokenError] {
   const char = input[0]
 
-  if (input.startsWith('<%')) return [2, 'BStart']
-  if (input.startsWith('%>')) return [2, 'BEnd']
   if (input.startsWith('>>')) return [2, 'LookAhead']
   if (input.startsWith('<<')) return [2, 'LookBehind']
   if (input.startsWith('::')) return [2, 'Backref']
