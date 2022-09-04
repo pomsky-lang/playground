@@ -69,8 +69,8 @@ export function Matches({ matches, string }: Args) {
                     </td>
                   </tr>
                 ))}
-                {Object.entries(matches[selected].groups ?? {}).map(([groupName, match]) => (
-                  <tr>
+                {Object.entries(matches[selected].groups ?? {}).map(([groupName, match], i) => (
+                  <tr key={i}>
                     <td>
                       <code>{groupName}</code>:
                     </td>
