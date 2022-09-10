@@ -1,13 +1,6 @@
 import { languages } from 'monaco-editor'
 import { findClosestTokenIndex, isInCharacterSet, tokenizePomsky } from '../editors/tokenizePomsky'
-import { charSetSnippets, globalSnippets } from './snippets'
-
-const completionRange = {
-  startColumn: 1,
-  endColumn: 1,
-  startLineNumber: 1,
-  endLineNumber: 1,
-}
+import { charSetSnippets, completionRange, globalSnippets } from './snippets'
 
 export const completionItems: languages.CompletionItemProvider = {
   provideCompletionItems(model, position) {

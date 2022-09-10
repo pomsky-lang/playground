@@ -13,7 +13,7 @@ interface Snippet {
   insertTextRules?: CompletionItemInsertTextRule
 }
 
-const completionRange = {
+export const completionRange = {
   startColumn: 1,
   endColumn: 1,
   startLineNumber: 1,
