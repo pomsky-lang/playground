@@ -1378,10 +1378,10 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-pomsky-wasm@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/pomsky-wasm/-/pomsky-wasm-0.1.2.tgz#ed7199e4ce0dbe8edf3b976cad30016390f27a88"
-  integrity sha512-VmR1nJJrd46ODD5Rqufik84kgp9LZN9FPDKMaaM3LqSWQNE3PxbZR7ZdBgNK96XpP+2AuQLFuubg9oiSPIfvTA==
+pomsky-wasm@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/pomsky-wasm/-/pomsky-wasm-0.1.3.tgz#fa9655df2368f99a330926a5816bfa75d1ccf529"
+  integrity sha512-0v12oTG+FIfZtPDWT/ksu+UrIK1U96Y5+M/YrK9fdEdeZOIlhrh+dT5Nm/vXqSdWjJM5SVDWiQdGxPd8uKZmGw==
 
 postcss@^8.4.16:
   version "8.4.16"
