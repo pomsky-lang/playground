@@ -8,7 +8,7 @@ export const completionItems: languages.CompletionItemProvider = {
     const tokens = tokenizePomsky(value)
 
     const offset = model.getOffsetAt(position)
-    let tokenIndex = findClosestTokenIndex(tokens, offset)
+    const tokenIndex = findClosestTokenIndex(tokens, offset)
     let isInCharClass = false
 
     if (tokenIndex < tokens.length) {
@@ -30,7 +30,7 @@ export const completionItems: languages.CompletionItemProvider = {
     const suggestions = isInCharClass
       ? charSetSnippets
       : [
-          ...[...new Set([...value.matchAll(/\blet (\w+)/gi)].map((x) => x[1]))].map(
+          ...[...new Set([...value.matchAll(/\blet (\w+)/giu)].map((x) => x[1]))].map(
             (word): languages.CompletionItem => ({
               kind: languages.CompletionItemKind.Variable,
               label: word,

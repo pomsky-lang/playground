@@ -1,6 +1,7 @@
 import { editor } from 'monaco-editor'
 import { useEffect, useRef, useState } from 'react'
 import { defaultEditorSettings } from '../monacoConfig'
+import { err } from '../utils/err'
 import { currentPrefColorScheme } from './useColorScheme'
 
 export function useMonacoEditor(value: string, setValue: (v: string) => void) {
@@ -23,7 +24,9 @@ export function useMonacoEditor(value: string, setValue: (v: string) => void) {
 
   useEffect(() => {
     if (shouldInitialize) {
-      editorRef.current = createEditor(editorElem.current!, value, setValue)
+      const elem =
+        editorElem.current ?? err('editorElem not defined even though shouldInitialize is set')
+      editorRef.current = createEditor(elem, value, setValue)
     }
   }, [shouldInitialize])
 

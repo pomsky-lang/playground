@@ -6,6 +6,7 @@ import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
 import { useLocalStorage, useMonacoEditor } from '../hooks'
 import { Output } from './Output'
 import css from './Editors.module.scss'
+import { err } from '../utils/err'
 
 export const flavors = ['js', 'java', 'pcre', 'ruby', 'python', 'rust', 'dotnet'] as const
 export type Flavor = typeof flavors[number]
@@ -58,7 +59,8 @@ export function Editors({ editorValue, setEditorValue, config }: EditorProps) {
     const pomskyEditor = editorRef.current
     if (pomskyEditor == null) return
 
-    editor.setModelMarkers(pomskyEditor.getModel()!, '', result.diagnostics ?? [])
+    const model = pomskyEditor.getModel() ?? err('no monaco text model')
+    editor.setModelMarkers(model, '', result.diagnostics ?? [])
   }, [result])
 
   const editorStyle =

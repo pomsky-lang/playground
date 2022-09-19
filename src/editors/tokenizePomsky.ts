@@ -1,9 +1,11 @@
-const IS_ASCII_DIGIT = /[0-9]/
-const NO_ASCII_HEXDIGIT = /[^0-9a-fA-F]/
+import { err } from '../utils/err'
+
+const IS_ASCII_DIGIT = /[0-9]/u
+const NO_ASCII_HEXDIGIT = /[^0-9a-fA-F]/u
 const IS_LETTER = /\p{Alpha}/u
 const NO_WORD_CHAR = /[^\p{Alpha}\p{M}\p{Nd}_]/u
 
-const DOUBLE_QUOTED_STRING = /^"(?:\\[\s\S]|[^\\"])*"?/
+const DOUBLE_QUOTED_STRING = /^"(?:\\[\s\S]|[^\\"])*"?/u
 
 type Token =
   | 'Caret'
@@ -39,12 +41,12 @@ interface TokenError {
 }
 
 export function tokenizePomsky(input: string): [Token | TokenError, number, number][] {
-  let result: [Token | TokenError, number, number][] = []
+  const result: [Token | TokenError, number, number][] = []
   let offset = 0
 
   for (;;) {
     const inputLen = input.length
-    input = input.replace(/^(\s*|#.*)*/, '')
+    input = input.replace(/^(\s*|#.*)*/u, '')
     offset += inputLen - input.length
 
     if (input.length === 0) {
@@ -63,7 +65,7 @@ export function tokenizePomsky(input: string): [Token | TokenError, number, numb
 }
 
 const singleTokens: { [token: string]: Token | TokenError } = {
-  $: 'Dollar',
+  '$': 'Dollar',
   '^': 'Caret',
   '%': 'BWord',
   '*': 'Star',
@@ -85,6 +87,7 @@ const singleTokens: { [token: string]: Token | TokenError } = {
   '=': 'Equals',
 }
 
+// eslint-disable-next-line complexity
 function consumeChain(input: string): [number, Token | TokenError] {
   const char = input[0]
 
@@ -129,7 +132,7 @@ function consumeChain(input: string): [number, Token | TokenError] {
     return [numLength === -1 ? input.length : numLength, 'Number']
   }
 
-  if (IS_LETTER.test(char) || char == '_') {
+  if (IS_LETTER.test(char) || char === '_') {
     const wordLength = input.search(NO_WORD_CHAR)
     return [wordLength === -1 ? input.length : wordLength, 'Identifier']
   }
@@ -139,8 +142,8 @@ function consumeChain(input: string): [number, Token | TokenError] {
 
 function findLengthOfDoubleQuotedString(input: string): number | undefined {
   DOUBLE_QUOTED_STRING.lastIndex = 0
-  const res = DOUBLE_QUOTED_STRING.exec(input)
-  return res![0].length
+  const res = DOUBLE_QUOTED_STRING.exec(input) ?? err('quote not found')
+  return res[0].length
 }
 
 export function findClosestTokenIndex(

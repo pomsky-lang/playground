@@ -22,7 +22,7 @@ export function App() {
   )
 
   // this ensures the component is re-rendered when the screen size changes
-  const _ = useWindowWidth()
+  useWindowWidth()
 
   const share = useCallback(() => {
     history.pushState({}, '', location.pathname + '?text=' + encodeURIComponent(editorValue))

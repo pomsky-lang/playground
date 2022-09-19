@@ -17,7 +17,6 @@ export function usePreferredColorScheme() {
 
   useEffect(() => {
     const listener = () => {
-      console.log(matchMedia.matches)
       setPreferDark(matchMedia.matches)
     }
     matchMedia.addEventListener('change', listener)

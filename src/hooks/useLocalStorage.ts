@@ -42,7 +42,9 @@ export function useLocalStorage<T>(
       } else {
         try {
           setValue(JSON.parse(event.newValue))
-        } catch {}
+        } catch {
+          // do nothing
+        }
       }
     }
   })

@@ -24,7 +24,7 @@ export function MatchText({ regex }: Args) {
     } catch (e) {
       setCompileError((e as Error).message)
       setExecError(null)
-      return /[^\s\S]/g
+      return /[^\s\S]/gu
     }
   }, [regex, ignoreCase])
   const [matches, setMatches] = useState<RegExpExecArray[]>([])

@@ -33,7 +33,7 @@ Start '\' ( esc_hex
           )
 */
 const BACKSLASH_ESC =
-  /^\\(?:x[0-9a-fA-F]{2}|0[0-7]{2}|o\{[0-7]{1,8}}|u[0-9a-fA-F]{4}|[ux]\{[0-9a-fA-F]{1,6}}|c[a-zA-Z]|[gk](?:-?[0-9][0-9]?|\{[0-9a-zA-Z_\-+]+}|<[0-9a-zA-Z_\-+]+>|'[0-9a-zA-Z_\-+]+')|[pP](?:[a-zA-Z]|\{\^?[0-9a-zA-Z_\-+]+})|[\s\S])/
+  /^\\(?:x[0-9a-fA-F]{2}|0[0-7]{2}|o\{[0-7]{1,8}\}|u[0-9a-fA-F]{4}|[ux]\{[0-9a-fA-F]{1,6}\}|c[a-zA-Z]|[gk](?:-?[0-9][0-9]?|\{[0-9a-zA-Z_\-+]+\}|<[0-9a-zA-Z_\-+]+>|'[0-9a-zA-Z_\-+]+')|[pP](?:[a-zA-Z]|\{\^?[0-9a-zA-Z_\-+]+\})|[\s\S])/u
 
 /*
 # MODIFIER
@@ -54,12 +54,12 @@ Start '?' ( ['|>']
           )?
 */
 const MODIFIER =
-  /^\?(?:[|>]|<?[=!]|P?<[0-9a-zA-Z+\-_]+>|'[0-9a-zA-Z+\-_]+'|\([0-9a-zA-Z+\-_]+\)|\(<[0-9a-zA-Z+\-_]+>\)|\('[0-9a-zA-Z+\-_]+'\)|(?:(?:&|P=|P>)[0-9a-zA-Z+\-_]+|[R0]|[+\-]?[0-9]+)(?=\)))?/
+  /^\?(?:[|>]|<?[=!]|P?<[0-9a-zA-Z+\-_]+>|'[0-9a-zA-Z+\-_]+'|\([0-9a-zA-Z+\-_]+\)|\(<[0-9a-zA-Z+\-_]+>\)|\('[0-9a-zA-Z+\-_]+'\)|(?:(?:&|P=|P>)[0-9a-zA-Z+\-_]+|[R0]|[+-]?[0-9]+)(?=\)))?/u
 
 /*
 ['\[](){}^$.|?*+-&']
 */
-const NO_PLAINTEXT = /[\\[\](){}\^$.|?*+\-&]/
+const NO_PLAINTEXT = /[\\[\](){}^$.|?*+\-&]/u
 
 export type Token =
   | 'string'
@@ -110,7 +110,7 @@ export function tokenizeRegex(input: string): [Token, number, number][] {
 }
 
 const globalTokens: { [token: string]: Token } = {
-  $: 'dollar',
+  '$': 'dollar',
   '^': 'caret',
   '*': 'star',
   '+': 'plus',
@@ -120,6 +120,7 @@ const globalTokens: { [token: string]: Token } = {
   '|': 'punct',
 }
 
+// eslint-disable-next-line complexity
 function consumeChain(input: string, context: Context): [number, Token, Context] {
   if (context === Context.Braces) {
     const braceIdx = input.indexOf('}')

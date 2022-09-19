@@ -26,14 +26,14 @@ export const languageConfiguration: languages.LanguageConfiguration = {
         indentAction: languages.IndentAction.None,
         appendText: '# ',
       },
-      beforeText: /^\s*#/,
+      beforeText: /^\s*#/u,
     },
     {
       action: {
         indentAction: languages.IndentAction.IndentOutdent,
       },
-      beforeText: /\(\s*!?(<<|>>)?\s*$/,
-      afterText: /\)/,
+      beforeText: /\(\s*!?(<<|>>)?\s*$/u,
+      afterText: /\)/u,
     },
   ],
 }
