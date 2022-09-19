@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { CSSProperties, useEffect, useState } from 'react'
 import { highlightRegex } from '../editors/highlight'
 import { CompileResult } from '../editors/pomskySupport'
 import { useLocalStorage } from '../hooks'
@@ -13,6 +13,7 @@ interface Args {
   result: CompileResult
   flavor: Flavor
   onFlavorChange(flavor: Flavor): void
+  style?: CSSProperties
 }
 
 const flavorMap: Record<Flavor, string> = {
@@ -25,7 +26,7 @@ const flavorMap: Record<Flavor, string> = {
   dotnet: '.NET',
 }
 
-export function Output({ result, flavor, onFlavorChange }: Args) {
+export function Output({ result, flavor, onFlavorChange, style }: Args) {
   const [cached, setCached] = useState('')
   const [tab, setTab] = useLocalStorage<'output' | 'match'>('playgroundActiveTab', () => 'output')
 
@@ -62,7 +63,7 @@ export function Output({ result, flavor, onFlavorChange }: Args) {
             onChange={onFlavorChange}
           />
           <ErrorMessage result={result} />
-          <div className={css.regex} tabIndex={0}>
+          <div className={css.regex} tabIndex={0} style={style}>
             {highlightRegex(cached)}
           </div>
         </>

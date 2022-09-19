@@ -1,20 +1,24 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useWindowWidth, useLocalStorage } from '../hooks'
 import css from './App.module.scss'
-import { Editors } from './Editors'
+import { EditorConfigSettings, Editors } from './Editors'
 import burger from '../assets/burger.svg?raw'
 import { useEditorValue } from '../hooks/useEditorValue'
+import { EditorConfig } from './EditorConfig'
 
 export function App() {
   const [editorValue, setEditorValue] = useEditorValue()
   const [copied, setCopied] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const [tabSize, setTabSize] = useLocalStorage('playgroundTabSize', () => 2)
-  const [fontSize, setFontSize] = useLocalStorage<number>(
-    'playgroundFontSize',
-    () => (window.innerWidth > 800 ? 17 : window.innerWidth > 560 ? 16 : 15),
-    { clearWhenDefault: false },
+  const [editorConfig, setEditorConfig] = useLocalStorage<EditorConfigSettings>(
+    'editorConfig',
+    () => ({
+      tabSize: 2,
+      fontSize: window.innerWidth > 800 ? 17 : window.innerWidth > 560 ? 16 : 15,
+      fontFamily: "'JetBrains Mono', monospace",
+      wordWrap: 'on',
+    }),
   )
 
   // this ensures the component is re-rendered when the screen size changes
@@ -89,12 +93,7 @@ export function App() {
         </div>
       </header>
 
-      <Editors
-        editorValue={editorValue}
-        setEditorValue={setEditorValue}
-        tabSize={tabSize}
-        fontSize={fontSize}
-      />
+      <Editors editorValue={editorValue} setEditorValue={setEditorValue} config={editorConfig} />
 
       <div id="sidebar" className={`${css.sidebar} ${sidebarOpen ? css.open : ''}`}>
         <div className={css.sidebarHeader}>
@@ -114,26 +113,7 @@ export function App() {
             <hr />
           </div>
 
-          <div className={css.editorSetting}>
-            Indentation:
-            <select value={tabSize} onChange={(e) => setTabSize(+e.target.value)}>
-              <option value="2">2 spaces</option>
-              <option value="4">4 spaces</option>
-            </select>
-          </div>
-          <div className={css.editorSetting}>
-            Font size:
-            <input
-              type="number"
-              value={fontSize}
-              onChange={(e) => {
-                const value = e.target.value
-                if (!isNaN(+value)) {
-                  setFontSize(+value)
-                }
-              }}
-            />
-          </div>
+          <EditorConfig config={editorConfig} setConfig={setEditorConfig} />
         </div>
       </div>
     </>

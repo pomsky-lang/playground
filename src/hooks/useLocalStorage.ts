@@ -23,7 +23,12 @@ export function useLocalStorage<T>(
       return value
     } else {
       try {
-        return JSON.parse(stored)
+        const parsed = JSON.parse(stored)
+        if (typeof parsed === 'object') {
+          return { ...defaultValue(), ...parsed }
+        } else {
+          return parsed
+        }
       } catch {
         return defaultValue()
       }

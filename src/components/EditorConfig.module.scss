@@ -1,0 +1,20 @@
+.editorSetting {
+  display: flex;
+  margin: 1rem 0;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input,
+select {
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-fg);
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+  border-radius: 4px;
+  width: 200px;
+  margin: 0;
+}

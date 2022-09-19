@@ -12,14 +12,20 @@ export type Flavor = typeof flavors[number]
 
 initMonaco()
 
+export interface EditorConfigSettings {
+  tabSize: number
+  fontSize: number
+  fontFamily: string
+  wordWrap: 'off' | 'on'
+}
+
 interface EditorProps {
   editorValue: string
   setEditorValue(newValue: string): void
-  tabSize: number
-  fontSize: number
+  config: EditorConfigSettings
 }
 
-export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: EditorProps) {
+export function Editors({ editorValue, setEditorValue, config }: EditorProps) {
   const [wasmInit, setWasmInit] = useState(false)
   const [result, setResult] = useState<CompileResult>({ output: '' })
   const [flavor, setFlavor] = useLocalStorage<Flavor>('playgroundFlavor', () => 'js')
@@ -28,12 +34,14 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
 
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.updateOptions({ fontSize, tabSize })
+      editorRef.current.updateOptions(config)
     } else {
-      defaultEditorSettings.fontSize = fontSize
-      defaultEditorSettings.tabSize = tabSize
+      defaultEditorSettings.fontSize = config.fontSize
+      defaultEditorSettings.tabSize = config.tabSize
+      defaultEditorSettings.fontFamily = config.fontFamily
+      defaultEditorSettings.wordWrap = config.wordWrap
     }
-  }, [tabSize, fontSize])
+  }, [config])
 
   useEffect(() => {
     if (!wasmInit) {
@@ -69,7 +77,15 @@ export function Editors({ editorValue, setEditorValue, tabSize, fontSize }: Edit
         />
       </div>
       <div className={css.regexPart}>
-        <Output result={result} flavor={flavor} onFlavorChange={setFlavor} />
+        <Output
+          result={result}
+          flavor={flavor}
+          onFlavorChange={setFlavor}
+          style={{
+            fontFamily: config.fontFamily,
+            fontSize: config.fontSize,
+          }}
+        />
       </div>
     </div>
   )
