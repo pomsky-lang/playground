@@ -174,26 +174,74 @@ export const charSetSnippets: CompletionItem[] = [
     ['a', 'The _alert_ or _bell_ character `\\a`'],
     ['e', 'The _escape_ character `\\e`'],
   ]),
-  ...unicodeCompletions('character class', [
-    'word, w',
-    'digit, d',
-    'space, s',
-    'horiz_space, h',
-    'vert_space, v',
-    'ascii',
-    'ascii_alpha',
-    'ascii_alnum',
-    'ascii_blank',
-    'ascii_cntrl',
-    'ascii_digit',
-    'ascii_graph',
-    'ascii_lower',
-    'ascii_print',
-    'ascii_punct',
-    'ascii_space',
-    'ascii_upper',
-    'ascii_word',
-    'ascii_xdigit',
+  ...prepareCharClasses([
+    ['word', 'The _word_ character class, matching letters, digits and the underscore.'],
+    ['w', 'The _word_ character class, matching letters, digits and the underscore.'],
+    ['digit', 'The _digit_ character class'],
+    ['d', 'The _digit_ character class'],
+    ['space', 'The _space_ character class, matching all whitespace'],
+    ['s', 'The _space_ character class, matching all whitespace'],
+    [
+      'horiz_space',
+      'The _horiz_space_ character class, matching horizontal whitespace, which includes the tab and all characters in the “space separator” Unicode category.',
+    ],
+    [
+      'h',
+      'The _horiz_space_ character class, matching horizontal whitespace, which includes the tab and all characters in the “space separator” Unicode category.',
+    ],
+    [
+      'vert_space',
+      'The _vert_space_ character class, matching vertical whitespace, which includes all characters treated as line breaks in the Unicode standard.',
+    ],
+    [
+      'v',
+      'The _vert_space_ character class, matching vertical whitespace, which includes all characters treated as line breaks in the Unicode standard.',
+    ],
+
+    ['ascii', 'The _ascii_ character class, matching all code points between U+00 and U+7F.'],
+    ['ascii_alpha', 'The _ascii_alpha_ character class, matching all ASCII letters (a-z, A-Z).'],
+    [
+      'ascii_alnum',
+      'The _ascii_alnum_ character class, matching all ASCII letters and digits (a-z, A-Z, 0-9).',
+    ],
+    ['ascii_blank', 'The _ascii_blank_ character class, matching the ASCII space and tab.'],
+    [
+      'ascii_cntrl',
+      'The _ascii_cntrl_ character class, matching ASCII control characters (U+00-U+1F, U+7F).',
+    ],
+    ['ascii_digit', 'The _ascii_digit_ character class, matching all ASCII digits (0-9).'],
+    [
+      'ascii_graph',
+      'The _ascii_graph_ character class, matching all visible ASCII characters, which includes all printable ASCII characters except for the space (U+21-U+7E).',
+    ],
+    [
+      'ascii_lower',
+      'The _ascii_lower_ character class, matching all lowercase ASCII characters (a-z).',
+    ],
+    [
+      'ascii_print',
+      'The _ascii_print_ character class, matching all printable ASCII characters (U+20-U+7E).',
+    ],
+    [
+      'ascii_punct',
+      'The _ascii_punct_ character class, matching all ASCII punctuation and symbols (``!"#$%&\'()*+,-./:;<=>?@[\\]^_‘{|}~``).',
+    ],
+    [
+      'ascii_space',
+      'The _ascii_space_ character class, matching all ASCII whitespace characters (` \\t\\r\\n\\v\\f`).',
+    ],
+    [
+      'ascii_upper',
+      'The _ascii_upper_ character class, matching all uppercase ASCII characters (A-Z).',
+    ],
+    [
+      'ascii_word',
+      'The _ascii_word_ character class, matching all ASCII word characters: Letters, digits and underscores (a-z, A-Z, 0-9, _).',
+    ],
+    [
+      'ascii_xdigit',
+      'The _ascii_xdigit_ character class, matching all ASCII hexadecimal digits (a-f, A-F, 0-9).',
+    ],
   ]),
   ...unicodeCompletions('general category', [
     'Cased_Letter, LC',
@@ -607,6 +655,19 @@ function prepareChars(items: [string, string][]): CompletionItem[] {
       detail: 'character',
       documentation: { value: documentation },
       kind: CompletionItemKind.Text,
+      range: completionRange,
+    }),
+  )
+}
+
+function prepareCharClasses(items: [string, string][]): CompletionItem[] {
+  return items.map(
+    ([label, documentation]): CompletionItem => ({
+      label,
+      insertText: label,
+      detail: 'character class',
+      documentation: { value: documentation },
+      kind: CompletionItemKind.Constant,
       range: completionRange,
     }),
   )
