@@ -1,6 +1,10 @@
 .outer {
   padding: 0;
 
+  .ignoreCaseInput {
+    width: 30px;
+  }
+
   .topPanel {
     display: flex;
     padding: 0.5rem;

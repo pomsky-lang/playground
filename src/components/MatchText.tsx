@@ -68,6 +68,7 @@ export function MatchText({ regex }: Args) {
         <label>
           <input
             type="checkbox"
+            className={css.ignoreCaseInput}
             checked={ignoreCase}
             onChange={(e) => setIgnoreCase(e.target.checked)}
           />
