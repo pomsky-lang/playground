@@ -24,4 +24,8 @@ export function initMonaco() {
   addPrefColorSchemeListener(({ preferDark }) => {
     editor.setTheme(preferDark ? 'custom-dark' : 'custom-light')
   })
+
+  document.fonts.ready.then(() => {
+    editor.remeasureFonts()
+  })
 }
