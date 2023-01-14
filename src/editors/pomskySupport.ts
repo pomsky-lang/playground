@@ -1,5 +1,5 @@
 import { editor, MarkerSeverity } from 'monaco-editor'
-import init, { compile, PomskyDiagnostic, PomskyError } from 'pomsky-wasm'
+import init, { compile, PomskyDiagnostic } from 'pomsky-wasm'
 
 export { init }
 
@@ -13,32 +13,27 @@ export interface Diagnostic extends editor.IMarkerData {
   help?: string
 }
 
-export function compilePomsky(input: string, options?: { flavor?: string }): CompileResult {
+interface Options {
+  flavor?: 'js' | 'javascript' | 'java' | '.net' | 'dotnet' | 'python' | 'ruby' | 'rust' | 'pcre'
+}
+
+export function compilePomsky(input: string, options?: Options): CompileResult {
   try {
-    const { output, warnings } = compile(input, options?.flavor ?? 'js')
+    const { output, diagnostics } = compile(input, options?.flavor ?? 'js')
+
     return {
-      output,
-      diagnostics: warnings.map((w) => convert(input, MarkerSeverity.Warning, w)),
+      output: output ?? undefined,
+      diagnostics: diagnostics.map((w) => convert(input, w)),
     }
   } catch (e) {
-    if (typeof e !== 'object' || e === null || !('diagnostics' in e)) {
-      console.error(e)
-      return {
-        diagnostics: [],
-      }
-    }
-
-    const { diagnostics } = e as PomskyError
-    return {
-      diagnostics: diagnostics.map((w) => convert(input, MarkerSeverity.Error, w)),
-    }
+    console.error(e)
+    return { diagnostics: [] }
   }
 }
 
 function convert(
   input: string,
-  severity: MarkerSeverity,
-  { help, message, range: [start, end] }: PomskyDiagnostic,
+  { severity, kind, code, help, message, range: [start, end] }: PomskyDiagnostic,
 ): Diagnostic {
   const lines1 = input.slice(0, start).split('\n')
   const lines2 = input.slice(start, end).split('\n')
@@ -48,7 +43,7 @@ function convert(
   const start2 = lines2.length > 1 ? last2.length + 1 : last2.length + start1
 
   return {
-    severity,
+    severity: severity === 'error' ? MarkerSeverity.Error : MarkerSeverity.Warning,
     startColumn: start1,
     startLineNumber: lines1.length,
     endColumn: start2,
@@ -56,5 +51,6 @@ function convert(
     message: help != null ? `${message}\n\nHelp: ${help}` : message,
     title: message,
     help: help ?? undefined,
+    code: `${kind} (${code})`,
   }
 }
