@@ -71,7 +71,7 @@ export function App() {
         </a>
         <a
           className={css.hideSmall}
-          href="https://github.com/rulex-rs/pomsky"
+          href="https://github.com/pomsky-lang/pomsky"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -108,7 +108,7 @@ export function App() {
           <div className={css.hideBig}>
             <a href="https://pomsky-lang.org/docs/get-started/introduction/">Docs</a>
             <a href="https://pomsky-lang.org/blog/">Blog</a>
-            <a href="https://github.com/rulex-rs/pomsky">GitHub</a>
+            <a href="https://github.com/pomsky-lang/pomsky">GitHub</a>
 
             <hr />
           </div>
