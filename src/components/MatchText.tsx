@@ -32,7 +32,8 @@ export function MatchText({ regex }: Args) {
   useEffect(() => {
     const results: RegExpExecArray[] = []
     compiledRegex.lastIndex = 0
-    let previousLastIndex = 0
+    let previousLastIndex = -1
+    let previousIndex = -1
 
     if (execError != null) {
       setExecError(null)
@@ -48,10 +49,14 @@ export function MatchText({ regex }: Args) {
 
       const next = compiledRegex.exec(matchText)
       if (next == null) break
-      results.push(next)
+      if (next.index !== previousIndex) {
+        // don't report duplicates
+        results.push(next)
+      }
+      previousIndex = next.index
 
-      // don't get stuck
       if (compiledRegex.lastIndex <= previousLastIndex) {
+        // don't get stuck
         const skipChar = matchText.charCodeAt(compiledRegex.lastIndex)
         compiledRegex.lastIndex += skipChar <= 0xd7ff ? 1 : 2
       }
