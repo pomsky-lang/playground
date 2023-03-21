@@ -1,5 +1,5 @@
 import { editor, MarkerSeverity } from 'monaco-editor'
-import init, { compile, PomskyDiagnostic } from 'pomsky-wasm'
+import init, { compile, PomskyDiagnostic } from '@pomsky-lang/compiler-web'
 
 export { init }
 

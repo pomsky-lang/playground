@@ -9,6 +9,6 @@ export default defineConfig(({ mode }) => ({
     sourcemap: true,
   },
   optimizeDeps: {
-    exclude: mode === 'production' ? [] : ['pomsky-wasm'],
+    exclude: mode === 'production' ? [] : ['@pomsky-lang/compiler-web'],
   },
 }))
