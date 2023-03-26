@@ -1,13 +1,18 @@
 import { useState } from 'react'
+import { decompressFromUriEncoded } from '../utils/compression'
 
 const urlParams = new URLSearchParams(location.search)
 
 let storeLocally = false
 
 function getEditorInitialValue() {
-  const urlParamContent = urlParams.get('text')
-  if (urlParamContent !== null) {
-    return urlParamContent
+  const urlParamText = urlParams.get('text')
+  if (urlParamText !== null) {
+    return urlParamText
+  }
+  const urlParamC = urlParams.get('c')
+  if (urlParamC !== null) {
+    return decompressFromUriEncoded(urlParamC)
   }
 
   storeLocally = true

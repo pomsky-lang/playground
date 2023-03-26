@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@pomsky-lang/compiler-web": "^0.10.1",
+    "fflate": "^0.7.4",
+    "js-base64": "^3.7.5",
     "monaco-editor": "^0.34.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

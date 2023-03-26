@@ -85,25 +85,80 @@ range '0'-'10FFFF' base 16
     kind: CompletionItemKind.Snippet,
     insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
   },
+  // TODO: only show after range
   {
-    label: 'enable',
-    insertText: 'enable lazy;\n',
+    label: 'base',
+    insertText: 'base ${1:16}',
     detail: 'snippet',
     documentation: {
-      value: `Makes lazy matching the default.`,
+      value: `Comes after a \`range\` expression to set the number base, e.g. 16 for hexadecimal.
+      
+### Example:
+~~~pomsky
+range '0'-'FFF' base 16
+~~~`,
     },
     kind: CompletionItemKind.Snippet,
+    insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
+  },
+  {
+    label: 'atomic',
+    insertText: 'atomic(${1})',
+    detail: 'snippet',
+    documentation: {
+      value: `A special group that when exited discards all backtracking positions inside it.
+This can improve performance by preventing exponential backtracking in some situations.
+
+### Example:
+~~~pomsky
+atomic('bc' | 'b') 'c'
+~~~
+
+[Reference](https://www.regular-expressions.info/atomic.html)`,
+    },
+    kind: CompletionItemKind.Snippet,
+    insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
+  },
+  {
+    label: 'regex',
+    insertText: "regex '${0:(?0)}'",
+    detail: 'snippet',
+    documentation: {
+      value: `Inline regular expressions are embedded in the output unchanged.
+They're useful when you want to use a regex feature that isn't supported by Pomsky yet.
+
+This should only be used as a last resort, since Pomsky can't ensure that the output is correct.
+
+### Example:
+~~~pomsky
+# recursion, works in PCRE and Ruby
+let recurse = regex '\\g<0>';
+~~~
+
+[Reference](https://pomsky-lang.org/docs/language-tour/regex/)`,
+    },
+    kind: CompletionItemKind.Snippet,
+    insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
+  },
+  {
+    label: 'enable',
+    detail: 'keyword',
+    documentation: {
+      value: `Enables a mode, e.g. \`enable lazy;\`. Modes that can be enabled are
+- \`unicode\` (enabled by default)
+- \`lazy\` (disabled by default)`,
+    },
+    kind: CompletionItemKind.Keyword,
   },
   {
     label: 'disable',
-    insertText: 'disable lazy;\n',
-    detail: 'snippet',
+    detail: 'keyword',
     documentation: {
-      value: `Makes greedy matching the default.
-
-Note that greedy matching is usually the default, unless \`enable lazy;\` was used.`,
+      value: `Disables a mode, e.g. \`disable unicode;\`. Modes that can be disabled are
+- \`unicode\` (enabled by default)
+- \`lazy\` (disabled by default)`,
     },
-    kind: CompletionItemKind.Snippet,
+    kind: CompletionItemKind.Keyword,
   },
   {
     label: 'let',
@@ -146,20 +201,6 @@ Since \`greedy\` is the default, you only need this when you enabled \`lazy\` mo
 ~~~pomsky
 enable lazy;
 ['test']? greedy
-~~~`,
-    },
-    kind: CompletionItemKind.Keyword,
-  },
-  // TODO: only show after range
-  {
-    label: 'base',
-    detail: 'keyword',
-    documentation: {
-      value: `Comes after a \`range\` expression to set the number base, e.g. 16 for hexadecimal.
-      
-### Example:
-~~~pomsky
-range '0'-'FFF' base 16
 ~~~`,
     },
     kind: CompletionItemKind.Keyword,

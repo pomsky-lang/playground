@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { initMonaco, defaultEditorSettings } from '../monacoConfig'
 import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
-import { useLocalStorage, useMonacoEditor } from '../hooks'
+import { useMonacoEditor } from '../hooks'
 import { Output } from './Output'
 import css from './Editors.module.scss'
 import { err } from '../utils/err'
@@ -23,13 +23,14 @@ export interface EditorConfigSettings {
 interface EditorProps {
   editorValue: string
   setEditorValue(newValue: string): void
+  flavor: Flavor
+  setFlavor(newFlavor: Flavor): void
   config: EditorConfigSettings
 }
 
-export function Editors({ editorValue, setEditorValue, config }: EditorProps) {
+export function Editors({ editorValue, setEditorValue, flavor, setFlavor, config }: EditorProps) {
   const [wasmInit, setWasmInit] = useState(false)
   const [result, setResult] = useState<CompileResult>({ output: '' })
-  const [flavor, setFlavor] = useLocalStorage<Flavor>('playgroundFlavor', () => 'js')
 
   const [editorElem, editorRef] = useMonacoEditor(editorValue, setEditorValue)
 

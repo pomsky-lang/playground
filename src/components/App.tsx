@@ -5,9 +5,12 @@ import { EditorConfigSettings, Editors } from './Editors'
 import burger from '../assets/burger.svg?raw'
 import { useEditorValue } from '../hooks/useEditorValue'
 import { EditorConfig } from './EditorConfig'
+import { useEditorFlavor } from '../hooks/useEditorFlavor'
+import { compressToUriEncoded } from '../utils/compression'
 
 export function App() {
   const [editorValue, setEditorValue] = useEditorValue()
+  const [flavor, setFlavor] = useEditorFlavor()
   const [copied, setCopied] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -24,8 +27,9 @@ export function App() {
   // this ensures the component is re-rendered when the screen size changes
   useWindowWidth()
 
-  const share = useCallback(() => {
-    history.pushState({}, '', location.pathname + '?text=' + encodeURIComponent(editorValue))
+  const share = useCallback(async () => {
+    const compressed = compressToUriEncoded(editorValue)
+    history.pushState({}, '', `${location.pathname}?flavor=${flavor}&c=${compressed}`)
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(location.href).then(() => {
@@ -93,7 +97,13 @@ export function App() {
         </div>
       </header>
 
-      <Editors editorValue={editorValue} setEditorValue={setEditorValue} config={editorConfig} />
+      <Editors
+        editorValue={editorValue}
+        setEditorValue={setEditorValue}
+        flavor={flavor}
+        setFlavor={setFlavor}
+        config={editorConfig}
+      />
 
       <div id="sidebar" className={`${css.sidebar} ${sidebarOpen ? css.open : ''}`}>
         <div className={css.sidebarHeader}>
