@@ -1,0 +1,2 @@
+(function(){"use strict";self.onmessage=({data:t})=>{try{const e=l(t);self.postMessage({output:e})}catch(e){self.postMessage({error:e instanceof Error?e.message:"Searching failed or timed out"})}};function l({regex:t,haystack:e,ignoreCase:a,limit:c=1/0}){const s=new RegExp(t,a?"giu":"gu"),n=[];let r,o=0;for(;c-- >0&&(r=s.exec(e))!=null;)n.push(r),s.lastIndex===o&&s.lastIndex++,o=s.lastIndex;return n}})();
+//# sourceMappingURL=pomskyFindWorker-d7827622.js.map
