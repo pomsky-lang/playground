@@ -1,5 +1,5 @@
 import { MarkerSeverity } from 'monaco-editor'
-import { CompileResult } from '../editors/pomskySupport'
+import type { CompileResult } from '../editors/pomskySupport'
 import css from './ErrorMessage.module.scss'
 
 interface Args {

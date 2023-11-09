@@ -1,8 +1,8 @@
 import { err } from '../utils/err'
 
 const IS_ASCII_DIGIT = /[0-9]/u
-const NO_ASCII_HEXDIGIT = /[^0-9a-fA-F]/u
-const IS_LETTER = /\p{Alpha}/u
+const UNICODE_LIT = /^U\s*\+\s*[0-9a-fA-F]*/u
+const IS_LETTER = /[\p{Alpha}_]/u
 const NO_WORD_CHAR = /[^\p{Alpha}\p{M}\p{Nd}_]/u
 
 const DOUBLE_QUOTED_STRING = /^"(?:\\[\s\S]|[^\\"])*"?/u
@@ -14,6 +14,8 @@ type Token =
   | 'LookBehind'
   | 'Backref'
   | 'BWord'
+  | 'BWordStart'
+  | 'BWordEnd'
   | 'Star'
   | 'Plus'
   | 'QuestionMark'
@@ -68,6 +70,8 @@ const singleTokens: { [token: string]: Token | TokenError } = {
   '$': 'Dollar',
   '^': 'Caret',
   '%': 'BWord',
+  '<': 'BWordStart',
+  '>': 'BWordEnd',
   '*': 'Star',
   '+': 'Plus',
   '?': 'QuestionMark',
@@ -115,16 +119,9 @@ function consumeChain(input: string): [number, Token | TokenError] {
     }
   }
 
-  if (input.startsWith('U+')) {
-    const rest = input.slice(2)
-    const lenInner = rest.search(NO_ASCII_HEXDIGIT)
-    if (lenInner === -1) {
-      return [input.length, 'CodePoint']
-    } else if (lenInner === 0) {
-      return [1, { error: 'MissingCodePointNumber' }]
-    } else {
-      return [lenInner + 2, 'CodePoint']
-    }
+  const unicodeLiteralMatch = UNICODE_LIT.exec(input)
+  if (unicodeLiteralMatch != null) {
+    return [unicodeLiteralMatch[0].length, 'CodePoint']
   }
 
   if (IS_ASCII_DIGIT.test(char)) {
@@ -132,7 +129,7 @@ function consumeChain(input: string): [number, Token | TokenError] {
     return [numLength === -1 ? input.length : numLength, 'Number']
   }
 
-  if (IS_LETTER.test(char) || char === '_') {
+  if (IS_LETTER.test(char)) {
     const wordLength = input.search(NO_WORD_CHAR)
     return [wordLength === -1 ? input.length : wordLength, 'Identifier']
   }

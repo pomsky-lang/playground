@@ -19,7 +19,7 @@ export function ButtonSelect<T extends string>({
 
   const windowWidth = useWindowWidth()
   const parentWidth = useMemo(() => {
-    return windowWidth >= 800 ? windowWidth / 2 : windowWidth
+    return windowWidth >= 900 ? windowWidth / 2 : windowWidth
   }, [windowWidth])
 
   if (parentWidth > maxWidth) {

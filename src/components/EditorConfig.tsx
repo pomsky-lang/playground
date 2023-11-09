@@ -1,4 +1,5 @@
-import { EditorConfigSettings } from './Editors'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { EditorConfigSettings } from './Editors'
 import css from './EditorConfig.module.scss'
 
 export interface EditorConfigProps {
@@ -10,8 +11,9 @@ export function EditorConfig({ config, setConfig }: EditorConfigProps) {
   return (
     <>
       <div className={css.editorSetting}>
-        Indentation:
-        <select
+        Tab Size:
+        <input
+          type="number"
           value={config.tabSize}
           onChange={(e) => {
             const value = e.target.value
@@ -19,10 +21,7 @@ export function EditorConfig({ config, setConfig }: EditorConfigProps) {
               setConfig({ ...config, tabSize: +value })
             }
           }}
-        >
-          <option value="2">2 spaces</option>
-          <option value="4">4 spaces</option>
-        </select>
+        />
       </div>
       <div className={css.editorSetting}>
         Font size:
@@ -37,7 +36,7 @@ export function EditorConfig({ config, setConfig }: EditorConfigProps) {
           }}
         />
       </div>
-      <div className={css.editorSetting}>
+      <div className={`${css.editorSetting} ${css.big}`}>
         Font family:
         <input
           type="text"
@@ -52,12 +51,83 @@ export function EditorConfig({ config, setConfig }: EditorConfigProps) {
         <select
           value={config.wordWrap}
           onChange={(e) => {
-            setConfig({ ...config, wordWrap: e.target.value as 'on' | 'off' })
+            setConfig({ ...config, wordWrap: e.target.value as any })
           }}
         >
           <option value="on">on</option>
           <option value="off">off</option>
         </select>
+      </div>
+      <div className={css.editorSetting}>
+        Render Whitespace:
+        <select
+          value={config.renderWhitespace}
+          onChange={(e) => {
+            setConfig({ ...config, renderWhitespace: e.target.value as any })
+          }}
+        >
+          <option value="none">none</option>
+          <option value="boundary">boundary</option>
+          <option value="selection">selection</option>
+          <option value="trailing">trailing</option>
+          <option value="all">all</option>
+        </select>
+      </div>
+      <div className={css.editorSetting}>
+        Cursor Style:
+        <select
+          value={config.cursorStyle}
+          onChange={(e) => {
+            setConfig({ ...config, cursorStyle: e.target.value as any })
+          }}
+        >
+          <option value="line">line</option>
+          <option value="block">block</option>
+          <option value="underline">underline</option>
+          <option value="line-thin">line-thin</option>
+          <option value="block-outline">block-outline</option>
+          <option value="underline-thin">underline-thin</option>
+        </select>
+      </div>
+      <div className={css.editorSetting}>
+        Multi-Cursor Modifier:
+        <select
+          value={config.multiCursorModifer}
+          onChange={(e) => {
+            setConfig({ ...config, multiCursorModifer: e.target.value as any })
+          }}
+        >
+          <option value="alt">alt</option>
+          <option value="ctrlCmd">ctrlCmd</option>
+        </select>
+      </div>
+      <div className={css.editorSetting}>
+        Insert Spaces:
+        <input
+          type="checkbox"
+          checked={config.insertSpaces}
+          onChange={(e) => setConfig({ ...config, insertSpaces: e.target.checked })}
+        />
+      </div>
+      <div className={css.editorSetting}>
+        Bracket Pair Colorization:
+        <input
+          type="checkbox"
+          checked={config['bracketPairColorization.enabled']}
+          onChange={(e) => {
+            setConfig({ ...config, ['bracketPairColorization.enabled']: e.target.checked })
+          }}
+        />
+      </div>
+      <div className={css.editorSetting}>
+        Minimap Enabled:
+        <input
+          type="checkbox"
+          checked={config.minimap.enabled}
+          onChange={(e) => {
+            setConfig({ ...config, minimap: { ...config.minimap, enabled: e.target.checked } })
+          }}
+        />
       </div>
     </>
   )

@@ -1,4 +1,4 @@
-import { IMarkdownString, languages } from 'monaco-editor'
+import { type IMarkdownString, languages } from 'monaco-editor'
 
 import CompletionItem = languages.CompletionItem
 import CompletionItemKind = languages.CompletionItemKind

@@ -5,7 +5,7 @@ export const languageConfiguration: languages.LanguageConfiguration = {
     lineComment: '#',
   },
   autoClosingPairs: [
-    { open: '[\\', close: ']' },
+    { open: '[', close: ']' },
     { open: '(', close: ')' },
     { open: '{', close: '}' },
     { open: '"', close: '"' },
@@ -13,6 +13,8 @@ export const languageConfiguration: languages.LanguageConfiguration = {
   ],
   colorizedBracketPairs: [['(', ')']],
   surroundingPairs: [
+    { open: '[', close: ']' },
+    { open: '(', close: ')' },
     { open: '"', close: '"' },
     { open: "'", close: "'" },
   ],
@@ -34,6 +36,19 @@ export const languageConfiguration: languages.LanguageConfiguration = {
       },
       beforeText: /\(\s*!?(<<|>>)?\s*$/u,
       afterText: /\)/u,
+    },
+    {
+      action: {
+        indentAction: languages.IndentAction.IndentOutdent,
+      },
+      beforeText: /\btest\s*\{\s*$/u,
+      afterText: /\}/u,
+    },
+    {
+      action: {
+        indentAction: languages.IndentAction.Indent,
+      },
+      beforeText: /([=!]|<<|>>)\s*$/u,
     },
   ],
 }

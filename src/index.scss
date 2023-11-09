@@ -2,6 +2,8 @@
   --header-height: 57px;
   --header-gradient: linear-gradient(90deg, #b53636, #f4b73d 50%, #d32e9d);
 
+  --theme-color: #c74200;
+  --theme-color-dim: #dd7a49;
   --fg-color: black;
   --fg-content-2: #222;
   --bg-color: white;
@@ -40,13 +42,15 @@
   --close-icon: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZWUyZTYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLXgiPjxsaW5lIHgxPSIxOCIgeTE9IjYiIHgyPSI2IiB5Mj0iMTgiPjwvbGluZT48bGluZSB4MT0iNiIgeTE9IjYiIHgyPSIxOCIgeTI9IjE4Ij48L2xpbmU+PC9zdmc+');
 
   @media (prefers-color-scheme: dark) {
+    --theme-color: #f4b73d;
+    --theme-color-dim: #926408;
     --fg-color: white;
     --fg-content-2: #ccc;
     --bg-color: #212529;
-    --bg-content: #1e1e1e;
-    --bg-content-2: #262626;
+    --bg-content: #1e2125;
+    --bg-content-2: #212529;
     --bg-tooltip: #363636;
-    --bg-shiny: #0e0e0e;
+    --bg-shiny: #181a1e;
     --tooltip-shadow: #0004;
     --line-shadow: #7773;
 
@@ -78,8 +82,8 @@
 
 body {
   margin: 0;
-  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 18px;

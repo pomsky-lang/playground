@@ -1,13 +1,13 @@
-import { CSSProperties, useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import { highlightRegex } from '../editors/highlight'
-import { CompileResult } from '../editors/pomskySupport'
+import type { CompileResult } from '../editors/pomskySupport'
 import { useLocalStorage } from '../hooks'
 import { ButtonSelect } from './ButtonSelect'
-import { Flavor } from './Editors'
 import { ErrorMessage } from './ErrorMessage'
 import { MatchText } from './MatchText'
 import css from './Output.module.scss'
 import { Tabbar } from './Tabbar'
+import type { Flavor } from '../hooks/useCompilationResult'
 
 interface Args {
   result: CompileResult

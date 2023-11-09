@@ -1,4 +1,6 @@
+import { useContext } from 'react'
 import css from './Tabbar.module.scss'
+import { AppContext } from './App'
 
 interface Args<T extends string> {
   tabs: Record<T, Tab>
@@ -13,6 +15,8 @@ export interface Tab {
 }
 
 export function Tabbar<T extends string>({ tabs, selected, onSelect }: Args<T>) {
+  const { isTesting } = useContext(AppContext)
+
   return (
     <div className={css.tabs}>
       {(Object.keys(tabs) as T[]).map((key) => (
@@ -26,6 +30,7 @@ export function Tabbar<T extends string>({ tabs, selected, onSelect }: Args<T>) 
           {tabs[key].name}
         </button>
       ))}
+      <span className={`${css.testIndicator} ${isTesting ? css.visible : ''}`}>testing...</span>
     </div>
   )
 }

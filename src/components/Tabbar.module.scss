@@ -21,6 +21,44 @@
       color: var(--theme-link-color);
       background-color: var(--bg-content);
       border-bottom-color: transparent;
+      font-weight: 500;
+    }
+  }
+}
+
+.testIndicator {
+  font-size: 1rem;
+  padding: 10px;
+  margin-left: auto;
+  color: var(--theme-color);
+  float: right;
+  opacity: 0;
+  transition: 0.1s;
+
+  &.visible {
+    opacity: 1;
+    transition: 0.1s 0.1s;
+  }
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    border: 3px solid;
+    border-color: currentColor currentColor currentColor transparent;
+    margin-right: 10px;
+    vertical-align: middle;
+    animation: rotate 1s linear infinite;
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
   }
 }

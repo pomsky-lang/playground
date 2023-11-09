@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor'
+import type { editor } from 'monaco-editor'
 
 export const defaultEditorSettings: editor.IStandaloneEditorConstructionOptions = {
   theme: 'custom-dark',
@@ -12,8 +12,9 @@ export const defaultEditorSettings: editor.IStandaloneEditorConstructionOptions 
   scrollbar: {
     alwaysConsumeMouseWheel: false,
   },
-  fontSize: window.innerWidth > 800 ? 17 : window.innerWidth > 560 ? 16 : 15,
-  lineNumbers: window.innerWidth > 800 ? 'on' : 'off',
+  fontSize: window.innerWidth > 900 ? 17 : window.innerWidth > 560 ? 16 : 15,
+  lineNumbers: window.innerWidth > 900 ? 'on' : 'off',
   padding: { top: 6, bottom: 6 },
   wordBasedSuggestions: false,
+  lineNumbersMinChars: 2,
 }

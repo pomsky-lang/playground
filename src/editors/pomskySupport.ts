@@ -1,11 +1,15 @@
-import { editor, MarkerSeverity } from 'monaco-editor'
-import init, { compile, PomskyDiagnostic } from '@pomsky-lang/compiler-web'
+import { type editor, MarkerSeverity } from 'monaco-editor'
+import init, { compile, type PomskyDiagnostic } from '@pomsky-lang/compiler-web'
+import { convertRange } from './convertRange'
+import { runTests } from './workers'
 
 export { init }
 
 export interface CompileResult {
+  input: string
   output?: string
   diagnostics?: Diagnostic[]
+  testDiagnostics?: Promise<Diagnostic[]>
 }
 
 export interface Diagnostic extends editor.IMarkerData {
@@ -15,39 +19,45 @@ export interface Diagnostic extends editor.IMarkerData {
 
 interface Options {
   flavor?: 'js' | 'javascript' | 'java' | '.net' | 'dotnet' | 'python' | 'ruby' | 'rust' | 'pcre'
+  runTests?: boolean
 }
 
 export function compilePomsky(input: string, options?: Options): CompileResult {
   try {
-    const { output, diagnostics } = compile(input, options?.flavor ?? 'js')
+    const flavor = options?.flavor ?? 'js'
+    const { output, diagnostics, tests } = compile(input, flavor)
+
+    const newDiagnostics = diagnostics.map((w) => convert(input, w))
+
+    let testDiagnostics: Promise<Diagnostic[]> | undefined
+    if (
+      options?.runTests &&
+      output != null &&
+      tests != null &&
+      (flavor === 'js' || flavor === 'javascript')
+    ) {
+      testDiagnostics = runTests({ input, output, tests })
+    }
 
     return {
+      input,
       output: output ?? undefined,
-      diagnostics: diagnostics.map((w) => convert(input, w)),
+      diagnostics: newDiagnostics,
+      testDiagnostics,
     }
   } catch (e) {
     console.error(e)
-    return { diagnostics: [] }
+    return { input, diagnostics: [] }
   }
 }
 
 function convert(
   input: string,
-  { severity, kind, code, help, message, range: [start, end] }: PomskyDiagnostic,
+  { severity, kind, code, help, message, range }: PomskyDiagnostic,
 ): Diagnostic {
-  const lines1 = input.slice(0, start).split('\n')
-  const lines2 = input.slice(start, end).split('\n')
-  const last1 = lines1[lines1.length - 1] ?? ''
-  const last2 = lines2[lines2.length - 1] ?? ''
-  const start1 = last1.length + 1
-  const start2 = lines2.length > 1 ? last2.length + 1 : last2.length + start1
-
   return {
     severity: severity === 'error' ? MarkerSeverity.Error : MarkerSeverity.Warning,
-    startColumn: start1,
-    startLineNumber: lines1.length,
-    endColumn: start2,
-    endLineNumber: lines1.length + lines2.length - 1,
+    ...convertRange(input, range),
     message: help != null ? `${message}\n\nHelp: ${help}` : message,
     title: message,
     help: help ?? undefined,

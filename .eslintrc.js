@@ -48,5 +48,11 @@ module.exports = {
     'no-octal-escape': 'error',
     'no-throw-literal': 'error',
     'require-unicode-regexp': 'error',
+
+    '@typescript-eslint/consistent-type-imports': ['warn', { fixStyle: 'inline-type-imports' }],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+    ],
   },
 }

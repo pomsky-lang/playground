@@ -1,23 +1,26 @@
 import { editor } from 'monaco-editor'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { initMonaco, defaultEditorSettings } from '../monacoConfig'
-import { init, compilePomsky, CompileResult } from '../editors/pomskySupport'
 import { useMonacoEditor } from '../hooks'
 import { Output } from './Output'
 import css from './Editors.module.scss'
 import { err } from '../utils/err'
-
-export const flavors = ['js', 'java', 'pcre', 'ruby', 'python', 'rust', 'dotnet'] as const
-export type Flavor = typeof flavors[number]
+import { type Flavor, useCompilationResult } from '../hooks/useCompilationResult'
 
 initMonaco()
 
 export interface EditorConfigSettings {
-  tabSize: number
-  fontSize: number
-  fontFamily: string
-  wordWrap: 'off' | 'on'
+  'tabSize': number
+  'fontSize': number
+  'fontFamily': string
+  'wordWrap': 'off' | 'on'
+  'renderWhitespace': 'none' | 'boundary' | 'selection' | 'trailing' | 'all'
+  'cursorStyle': 'line' | 'block' | 'underline' | 'line-thin' | 'block-outline' | 'underline-thin'
+  'multiCursorModifer': 'ctrlCmd' | 'alt'
+  'insertSpaces': boolean
+  'bracketPairColorization.enabled': boolean
+  'minimap': { enabled: boolean }
 }
 
 interface EditorProps {
@@ -29,32 +32,33 @@ interface EditorProps {
 }
 
 export function Editors({ editorValue, setEditorValue, flavor, setFlavor, config }: EditorProps) {
-  const [wasmInit, setWasmInit] = useState(false)
-  const [result, setResult] = useState<CompileResult>({ output: '' })
-
+  const result = useCompilationResult(editorValue, flavor)
   const [editorElem, editorRef] = useMonacoEditor(editorValue, setEditorValue)
 
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.updateOptions(config)
     } else {
-      defaultEditorSettings.fontSize = config.fontSize
-      defaultEditorSettings.tabSize = config.tabSize
-      defaultEditorSettings.fontFamily = config.fontFamily
-      defaultEditorSettings.wordWrap = config.wordWrap
+      type Setting = string | number | boolean
+      type Settings = Record<string, Setting | Record<string, Setting>>
+
+      const defaults = defaultEditorSettings as Settings
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cfg = config as any as Settings
+
+      for (const key in cfg) {
+        const innerCfg = cfg[key]
+        if (innerCfg && typeof innerCfg === 'object') {
+          const innerDefaults = (defaults[key] ??= {}) as Record<string, Setting>
+          for (const innerKey in innerCfg) {
+            innerDefaults[innerKey] = innerCfg[innerKey]
+          }
+        } else {
+          defaults[key] = cfg[key]
+        }
+      }
     }
   }, [config])
-
-  useEffect(() => {
-    if (!wasmInit) {
-      init().then(() => {
-        setWasmInit(true)
-        setResult(compilePomsky(editorValue, { flavor }))
-      })
-    } else {
-      setResult(compilePomsky(editorValue, { flavor }))
-    }
-  }, [editorValue, flavor])
 
   useEffect(() => {
     const pomskyEditor = editorRef.current
@@ -65,9 +69,9 @@ export function Editors({ editorValue, setEditorValue, flavor, setFlavor, config
   }, [result])
 
   const editorStyle =
-    window.innerWidth > 800
-      ? { height: 'calc(100vh - var(--header-height))', width: '50vw' }
-      : { height: 'min(50vh, 400px)', width: '100vw' }
+    window.innerWidth > 900
+      ? { height: 'calc(100vh - var(--header-height))', width: 'calc(50vw - 10px)' }
+      : { height: 'min(50vh, 400px)', width: 'calc(100vw - 10px)' }
 
   return (
     <div className={css.divs}>

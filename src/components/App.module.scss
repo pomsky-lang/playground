@@ -3,9 +3,7 @@
   box-sizing: border-box;
   color: var(--fg-color);
   background-color: var(--bg-color);
-  border-top: 4px solid;
-  border-image-slice: 1;
-  border-image-source: var(--header-gradient);
+  border-top: 4px solid #f50;
   padding: 0 1rem 0.1rem;
   align-items: center;
   height: var(--header-height);
@@ -16,7 +14,7 @@
     flex-grow: 1;
   }
 
-  .burger,
+  .settings,
   .close {
     display: flex;
     align-items: center;
@@ -44,21 +42,20 @@
 .header {
   @include generic-header-styling;
 
-  h1 {
-    font-weight: 400;
-    font-size: 1.3rem;
-
-    .name {
+  .logo {
+    display: inline-block;
+    svg {
+      width: auto;
+      height: 40px;
       display: block;
-      height: 1.5rem;
     }
+  }
 
-    .caption {
-      font-weight: 500;
-      letter-spacing: 0.02rem;
-      font-size: 0.9rem;
-      color: var(--theme-link-color);
-    }
+  h1 {
+    font-weight: 500;
+    color: var(--theme-color);
+    font-size: 1.3rem;
+    margin: 0;
   }
 
   a {
@@ -108,6 +105,12 @@
   &.open {
     right: 0;
     box-shadow: 0 0 15px #0004;
+  }
+
+  .content {
+    box-sizing: border-box;
+    overflow: auto;
+    max-height: calc(100% - var(--header-height));
   }
 
   .sidebarHeader {
@@ -167,12 +170,6 @@
 
 .hideSmall {
   @media (max-width: 700px) {
-    display: none;
-  }
-}
-
-.hideBig {
-  @media (min-width: 700.1px) {
     display: none;
   }
 }

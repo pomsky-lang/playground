@@ -77,7 +77,7 @@
         }
         &:empty::before {
           content: '(empty)';
-          font-family: 'Work Sans', sans-serif;
+          font-family: Inter, sans-serif;
           opacity: 0.5;
         }
       }

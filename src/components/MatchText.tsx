@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks'
 import { Matches } from './Matches'
 import css from './MatchText.module.scss'
+import { runSearch } from '../editors/workers'
+import type { Rejection } from '../utils/workerQueue'
 
 interface Args {
   regex: string
@@ -10,62 +12,45 @@ interface Args {
 export function MatchText({ regex }: Args) {
   const [ignoreCase, setIgnoreCase] = useLocalStorage('playgroundIgnoreCase', () => false)
   const [matchText, setMatchText] = useLocalStorage('playgroundMatchText', () => '')
-  const [compileError, setCompileError] = useState<string | null>(null)
-  const [execError, setExecError] = useState<string | null>(null)
-
-  const compiledRegex = useMemo(() => {
-    try {
-      const compiled = new RegExp(regex, ignoreCase ? 'giu' : 'gu')
-      if (compileError != null) {
-        setCompileError(null)
-        setExecError(null)
-      }
-      return compiled
-    } catch (e) {
-      setCompileError((e as Error).message)
-      setExecError(null)
-      return /[^\s\S]/gu
-    }
-  }, [regex, ignoreCase])
+  const [searchError, setSearchError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
   const [matches, setMatches] = useState<RegExpExecArray[]>([])
 
+  const ref = useRef({ regex, ignoreCase, matchText })
+
   useEffect(() => {
-    const results: RegExpExecArray[] = []
-    compiledRegex.lastIndex = 0
-    let previousLastIndex = -1
-    let previousIndex = -1
+    ref.current.ignoreCase = ignoreCase
+    ref.current.matchText = matchText
+    ref.current.regex = regex
+    setMatches([])
+    setSearchError(null)
+    setBusy(true)
 
-    if (execError != null) {
-      setExecError(null)
-    }
-
-    let limit = 5000
-
-    for (;;) {
-      if (limit-- === 0) {
-        setExecError('Stopped after 5,000 matches')
-        break
-      }
-
-      const next = compiledRegex.exec(matchText)
-      if (next == null) break
-      if (next.index !== previousIndex) {
-        // don't report duplicates
-        results.push(next)
-      }
-      previousIndex = next.index
-
-      if (compiledRegex.lastIndex <= previousLastIndex) {
-        // don't get stuck
-        const skipChar = matchText.charCodeAt(compiledRegex.lastIndex)
-        compiledRegex.lastIndex += skipChar <= 0xd7ff ? 1 : 2
-      }
-
-      previousLastIndex = compiledRegex.lastIndex
-    }
-
-    setMatches(results)
-  }, [matchText, compiledRegex])
+    runSearch({ haystack: matchText, regex, ignoreCase, limit: 5000 })
+      .then((out) => {
+        if (
+          ref.current.ignoreCase === ignoreCase &&
+          ref.current.matchText === matchText &&
+          ref.current.regex === regex
+        ) {
+          setMatches(out)
+          setSearchError(null)
+          setBusy(false)
+        }
+      })
+      .catch((error: Rejection<string>) => {
+        if (error === 'cancel') return
+        if (
+          ref.current.ignoreCase === ignoreCase &&
+          ref.current.matchText === matchText &&
+          ref.current.regex === regex
+        ) {
+          setMatches([])
+          setSearchError(error.error)
+          setBusy(false)
+        }
+      })
+  }, [matchText, regex, ignoreCase])
 
   return (
     <div className={css.outer}>
@@ -80,33 +65,34 @@ export function MatchText({ regex }: Args) {
           Ignore case
         </label>
         <div className={`${css.matches} ${matches.length ? css.success : ''}`}>
-          {matches.length === 0
-            ? 'No match'
-            : matches.length === 1
-            ? '1 match'
-            : `${matches.length} matches`}
+          {busy ? (
+            <span className={css.searchingIndicator}>Searching...</span>
+          ) : matches.length === 0 ? (
+            'No match'
+          ) : matches.length === 1 ? (
+            '1 match'
+          ) : (
+            `${matches.length} matches`
+          )}
         </div>
       </div>
-      {compileError != null && (
+      {searchError != null && (
         <div className={css.errorPanel}>
-          <b>Error compiling regex:</b> {compileError}
+          <b>Error:</b> {searchError}
           <br />
-          <div className={css.bug}>
-            You found a bug! You can{' '}
-            <a
-              href="https://github.com/pomsky-lang/pomsky/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              report it here
-            </a>
-            .
-          </div>
-        </div>
-      )}
-      {execError != null && (
-        <div className={css.errorPanel}>
-          <b>Error executing regex:</b> {execError}
+          {searchError !== 'too much recursion' && (
+            <div className={css.bug}>
+              If you think this is a bug, you can{' '}
+              <a
+                href="https://github.com/pomsky-lang/pomsky/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                report it here
+              </a>
+              .
+            </div>
+          )}
         </div>
       )}
       <textarea

@@ -16,7 +16,9 @@ export const CustomDarkTheme: editor.IStandaloneThemeData = {
     { token: 'variable', foreground: '9cdcfe' },
     { token: 'variable.name', foreground: '9CDCFE' },
   ],
-  colors: {},
+  colors: {
+    'editor.background': '#1e2125',
+  },
 }
 
 export const CustomLightTheme: editor.IStandaloneThemeData = {

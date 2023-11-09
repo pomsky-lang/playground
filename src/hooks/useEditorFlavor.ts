@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Flavor } from '../components/Editors'
+import type { Flavor } from './useCompilationResult'
 
 const urlParams = new URLSearchParams(location.search)
 
