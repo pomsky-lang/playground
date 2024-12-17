@@ -1,11 +1,13 @@
+import { Token, tokenize } from '@pomsky-lang/parser'
 import { languages } from 'monaco-editor'
-import { findClosestTokenIndex, isInCharacterSet, tokenizePomsky } from '../editors/tokenizePomsky'
+
+import { findClosestTokenIndex, isInCharacterSet } from '../editors/tokenUtils'
 import { charSetSnippets, completionRange, globalSnippets } from './snippets'
 
 export const completionItems: languages.CompletionItemProvider = {
   provideCompletionItems(model, position) {
     const value = model.getValue()
-    const tokens = tokenizePomsky(value)
+    const tokens = tokenize(value)
 
     const offset = model.getOffsetAt(position)
     const tokenIndex = findClosestTokenIndex(tokens, offset)
@@ -14,7 +16,7 @@ export const completionItems: languages.CompletionItemProvider = {
     if (tokenIndex < tokens.length) {
       // don't show completions within strings or multi-char sigils such as `<<`
       const token = tokens[tokenIndex]
-      if (token[0] !== 'Identifier' && offset > token[1] && offset < token[2]) return
+      if (token[0] !== Token.Identifier && offset > token[1] && offset < token[2]) return
 
       isInCharClass = isInCharacterSet(tokens, tokenIndex, offset)
     }

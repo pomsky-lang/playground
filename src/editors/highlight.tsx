@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { tokenizeRegex } from './tokenizeRegex'
 
 export function highlightRegex(text: string): ReactNode[] {
