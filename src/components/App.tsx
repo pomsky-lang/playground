@@ -81,7 +81,9 @@ export function App() {
     <AppContext.Provider value={{ isTesting, setIsTesting }}>
       <header className={css.header}>
         <span className={css.logo} dangerouslySetInnerHTML={{ __html: logo }}></span>
-        <h1>Playground</h1>
+        <h1>
+          <span className={css.hideSmall}>Pomsky</span> Playground
+        </h1>
         <a className={css.hideSmall} href="https://pomsky-lang.org/">
           Home
         </a>
