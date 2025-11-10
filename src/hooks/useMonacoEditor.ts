@@ -5,8 +5,8 @@ import { err } from '../utils/err'
 import { currentPrefColorScheme } from './useColorScheme'
 
 export function useMonacoEditor(value: string, setValue: (v: string) => void) {
-  const editorElem = useRef<HTMLElement>()
-  const editorRef = useRef<editor.IStandaloneCodeEditor>()
+  const editorElem = useRef<HTMLElement>(null)
+  const editorRef = useRef<editor.IStandaloneCodeEditor>(null)
   const [shouldInitialize, setShouldInitialize] = useState(false)
 
   useEffect(() => {
