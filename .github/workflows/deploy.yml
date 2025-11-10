@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 🚚 Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24'
+          cache: yarn
+
+      - name: 🚚 Install dependencies
+        run: yarn
+
+      - name: 📦 Build production website
+        run: yarn run build -v
+
+      - name: Archive production artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages
+          path: dist/
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
