@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .outer {
   font-family: 'JetBrains Mono', monospace;
   font-variant-ligatures: none;
@@ -10,15 +12,15 @@
   .match {
     background-color: $matchColor;
     text-shadow: 0 0 3px var(--msg-text-shadow);
-    box-shadow: inset -2px -2px 0 lighten($matchColor, 10%);
+    box-shadow: inset -2px -2px 0 color.adjust($matchColor, $lightness: 10%);
     border-radius: 4px;
     color: white;
     cursor: pointer;
 
     &:hover,
     &:focus {
-      background-color: lighten($matchColor, 10%);
-      box-shadow: inset -2px -2px 0 lighten($matchColor, 20%);
+      background-color: color.adjust($matchColor, $lightness: 10%);
+      box-shadow: inset -2px -2px 0 color.adjust($matchColor, $lightness: 20%);
     }
 
     &.adjacent:not(:first-child) {
