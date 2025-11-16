@@ -24,6 +24,7 @@ const flavorMap: Record<Flavor, string> = {
   python: 'Python',
   rust: 'Rust',
   dotnet: '.NET',
+  re2: 'RE2',
 }
 
 export function Output({ result, flavor, onFlavorChange, style }: Args) {

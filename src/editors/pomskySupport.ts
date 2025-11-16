@@ -18,7 +18,17 @@ export interface Diagnostic extends editor.IMarkerData {
 }
 
 interface Options {
-  flavor?: 'js' | 'javascript' | 'java' | '.net' | 'dotnet' | 'python' | 'ruby' | 'rust' | 'pcre'
+  flavor?:
+    | 'js'
+    | 'javascript'
+    | 'java'
+    | '.net'
+    | 'dotnet'
+    | 'python'
+    | 'ruby'
+    | 'rust'
+    | 'pcre'
+    | 're2'
   runTests?: boolean
 }
 

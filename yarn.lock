@@ -437,10 +437,10 @@
     "@parcel/watcher-win32-ia32" "2.5.1"
     "@parcel/watcher-win32-x64" "2.5.1"
 
-"@pomsky-lang/compiler-web@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@pomsky-lang/compiler-web/-/compiler-web-0.12.0.tgz#ad6c2501d413a8cd12cd7653e8047f3bc2009957"
-  integrity sha512-LLCgZcseSrUqnP9Izo7obTVxSIaOfLAJlWTnkhrNhW+T7zjSrNu2V1kash5azgNHdpqBc87MOwxGXiyCzzioKQ==
+"@pomsky-lang/compiler-web@^0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@pomsky-lang/compiler-web/-/compiler-web-0.12.2.tgz#63d05a0c0e984f0271bb16efcf8476abcde63b34"
+  integrity sha512-Ar1u6cvim3bXtWn5/ba0zX/8wIRuugRZqfk/yAM3Zyllnivt1/pm6hK07Q9YhnLr8Bc44bttvMiwXyTTKfFbBw==
 
 "@pomsky-lang/parser@^0.1.1":
   version "0.1.1"

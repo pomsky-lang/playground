@@ -5,7 +5,7 @@ import type { Rejection } from '../utils/workerQueue'
 import { MarkerSeverity } from 'monaco-editor'
 import { convertRange } from '../editors/convertRange'
 
-export const flavors = ['js', 'java', 'pcre', 'ruby', 'python', 'rust', 'dotnet'] as const
+export const flavors = ['js', 'java', 'pcre', 'ruby', 'python', 'rust', 'dotnet', 're2'] as const
 export type Flavor = (typeof flavors)[number]
 
 export function useCompilationResult(editorValue: string, flavor: Flavor) {

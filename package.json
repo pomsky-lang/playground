@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pomsky-lang/compiler-web": "^0.12.0",
+    "@pomsky-lang/compiler-web": "^0.12.2",
     "@pomsky-lang/parser": "^0.1.1",
     "fflate": "^0.8.1",
     "js-base64": "^3.7.5",
